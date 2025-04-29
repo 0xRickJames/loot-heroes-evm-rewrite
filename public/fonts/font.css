@@ -1,0 +1,14 @@
+/* public/fonts/font.css */
+@font-face {
+  font-family: "CartaMarinaRegular";
+  src: url("/fonts/Carta_Marina_Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CartaMarinaBold";
+  src: url("/fonts/Carta_Marina_Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}

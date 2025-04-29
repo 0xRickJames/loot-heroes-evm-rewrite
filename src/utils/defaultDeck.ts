@@ -1,0 +1,96 @@
+import { Card } from "./interfaces"
+
+export const defaultDeck: Card[] = [
+  {
+    id: "9100",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/druidSoldier-square.png",
+    element: "earth",
+    type: "magic",
+    topAttack: 3,
+    rightAttack: 3,
+    bottomAttack: 3,
+    leftAttack: 4,
+    starRating: "3",
+  },
+  {
+    id: "9934",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/barbarianSoldier-square.png",
+    element: "fire",
+    type: "melee",
+    topAttack: 2,
+    rightAttack: 3,
+    bottomAttack: 3,
+    leftAttack: 3,
+    starRating: "2",
+  },
+  {
+    id: "9144",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/pirateSoldier-square.png",
+    element: "water",
+    type: "ranged",
+    topAttack: 1,
+    rightAttack: 2,
+    bottomAttack: 2,
+    leftAttack: 4,
+    specialAbility1: "magic-resist",
+    starRating: "2",
+  },
+  {
+    id: "9156",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/battlemageSoldier-square.png",
+    element: "ice",
+    type: "melee",
+    topAttack: 3,
+    rightAttack: 2,
+    bottomAttack: 1,
+    leftAttack: 2,
+    starRating: "1",
+  },
+  {
+    id: "1999",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/samuraiSoldier-square.png",
+    element: "lightning",
+    type: "melee",
+    topAttack: 1,
+    rightAttack: 2,
+    bottomAttack: 4,
+    leftAttack: 2,
+    starRating: "1",
+  },
+  {
+    id: "9765",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/sharpshooterSoldier-square.png",
+    element: "ice",
+    type: "ranged",
+    topAttack: 1,
+    rightAttack: 3,
+    bottomAttack: 1,
+    leftAttack: 3,
+    starRating: "1",
+  },
+  {
+    id: "9567",
+    lootScore: 100,
+    sprite:
+      "https://metadata-lootheroes-rose.vercel.app/common/hero/warriorSoldier-square.png",
+    element: "wind",
+    type: "melee",
+    topAttack: 2,
+    rightAttack: 2,
+    bottomAttack: 2,
+    leftAttack: 2,
+    starRating: "1",
+  },
+]

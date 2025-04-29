@@ -1,0 +1,9 @@
+node_modules
+build
+.next
+.vercel
+.DS_store
+.env
+
+# these files will be generated in production
+public/heroes

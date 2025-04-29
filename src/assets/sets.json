@@ -1,0 +1,226 @@
+[
+  {
+    "setID": "ice",
+    "setName": "Frigid Vestments",
+    "itemList": [
+      "ice_helm_rare",
+      "ice_shoulders_rare",
+      "ice_chest_rare",
+      "ice_neck_rare",
+      "ice_hands_rare",
+      "ice_legs_rare",
+      "ice_ring_rare",
+      "ice_weapon_rare"
+    ]
+  },
+  {
+    "setID": "fire",
+    "setName": "Molten Steel",
+    "itemList": [
+      "fire_helm_rare",
+      "fire_shoulders_rare",
+      "fire_chest_rare",
+      "fire_neck_rare",
+      "fire_hands_rare",
+      "fire_legs_rare",
+      "fire_ring_rare",
+      "fire_weapon_rare"
+    ]
+  },
+  {
+    "setID": "wind",
+    "setName": "Gale Finery",
+    "itemList": [
+      "wind_helm_rare",
+      "wind_shoulders_rare",
+      "wind_chest_rare",
+      "wind_neck_rare",
+      "wind_hands_rare",
+      "wind_legs_rare",
+      "wind_ring_rare",
+      "wind_weapon_rare"
+    ]
+  },
+  {
+    "setID": "water",
+    "setName": "Tidal Battlegear",
+    "itemList": [
+      "water_helm_rare",
+      "water_shoulders_rare",
+      "water_chest_rare",
+      "water_neck_rare",
+      "water_hands_rare",
+      "water_legs_rare",
+      "water_ring_rare",
+      "water_weapon_rare"
+    ]
+  },
+  {
+    "setID": "earth",
+    "setName": "Gaia's Defense",
+    "itemList": [
+      "earth_helm_rare",
+      "earth_shoulders_rare",
+      "earth_chest_rare",
+      "earth_neck_rare",
+      "earth_hands_rare",
+      "earth_legs_rare",
+      "earth_ring_rare",
+      "earth_weapon_rare"
+    ]
+  },
+  {
+    "setID": "lightning",
+    "setName": "Charged Regalia",
+    "itemList": [
+      "lightning_helm_rare",
+      "lightning_shoulders_rare",
+      "lightning_chest_rare",
+      "lightning_neck_rare",
+      "lightning_hands_rare",
+      "lightning_legs_rare",
+      "lightning_ring_rare",
+      "lightning_weapon_rare"
+    ]
+  },
+  {
+    "setID": "light",
+    "setName": "Celestial Raiment",
+    "itemList": [
+      "light_helm_rare",
+      "light_shoulders_rare",
+      "light_chest_rare",
+      "light_neck_rare",
+      "light_hands_rare",
+      "light_legs_rare",
+      "light_ring_rare",
+      "light_weapon_rare"
+    ]
+  },
+  {
+    "setID": "dark",
+    "setName": "Chaotic Assault",
+    "itemList": [
+      "dark_helm_rare",
+      "dark_shoulders_rare",
+      "dark_chest_rare",
+      "dark_neck_rare",
+      "dark_hands_rare",
+      "dark_legs_rare",
+      "dark_ring_rare",
+      "dark_weapon_rare"
+    ]
+  },
+  {
+    "setID": "ice",
+    "setName": "Frigid Vestements",
+    "itemList": [
+      "ice_helm_epic",
+      "ice_shoulders_epic",
+      "ice_chest_epic",
+      "ice_neck_epic",
+      "ice_hands_epic",
+      "ice_legs_epic",
+      "ice_ring_epic",
+      "ice_weapon_epic"
+    ]
+  },
+  {
+    "setID": "fire",
+    "setName": "Molten Steel",
+    "itemList": [
+      "fire_helm_epic",
+      "fire_shoulders_epic",
+      "fire_chest_epic",
+      "fire_neck_epic",
+      "fire_hands_epic",
+      "fire_legs_epic",
+      "fire_ring_epic",
+      "fire_weapon_epic"
+    ]
+  },
+  {
+    "setID": "wind",
+    "setName": "Gale Finery",
+    "itemList": [
+      "wind_helm_epic",
+      "wind_shoulders_epic",
+      "wind_chest_epic",
+      "wind_neck_epic",
+      "wind_hands_epic",
+      "wind_legs_epic",
+      "wind_ring_epic",
+      "wind_weapon_epic"
+    ]
+  },
+  {
+    "setID": "water",
+    "setName": "Tidal Battlegear",
+    "itemList": [
+      "water_helm_epic",
+      "water_shoulders_epic",
+      "water_chest_epic",
+      "water_neck_epic",
+      "water_hands_epic",
+      "water_legs_epic",
+      "water_ring_epic",
+      "water_weapon_epic"
+    ]
+  },
+  {
+    "setID": "earth",
+    "setName": "Gaia's Defense",
+    "itemList": [
+      "earth_helm_epic",
+      "earth_shoulders_epic",
+      "earth_chest_epic",
+      "earth_neck_epic",
+      "earth_hands_epic",
+      "earth_legs_epic",
+      "earth_ring_epic",
+      "earth_weapon_epic"
+    ]
+  },
+  {
+    "setID": "lightning",
+    "setName": "Charged Regalia",
+    "itemList": [
+      "lightning_helm_epic",
+      "lightning_shoulders_epic",
+      "lightning_chest_epic",
+      "lightning_neck_epic",
+      "lightning_hands_epic",
+      "lightning_legs_epic",
+      "lightning_ring_epic",
+      "lightning_weapon_epic"
+    ]
+  },
+  {
+    "setID": "light",
+    "setName": "Celestial Raiment",
+    "itemList": [
+      "light_helm_epic",
+      "light_shoulders_epic",
+      "light_chest_epic",
+      "light_neck_epic",
+      "light_hands_epic",
+      "light_legs_epic",
+      "light_ring_epic",
+      "light_weapon_epic"
+    ]
+  },
+  {
+    "setID": "dark",
+    "setName": "Chaotic Assault",
+    "itemList": [
+      "dark_helm_epic",
+      "dark_shoulders_epic",
+      "dark_chest_epic",
+      "dark_neck_epic",
+      "dark_hands_epic",
+      "dark_legs_epic",
+      "dark_ring_epic",
+      "dark_weapon_epic"
+    ]
+  }
+]
