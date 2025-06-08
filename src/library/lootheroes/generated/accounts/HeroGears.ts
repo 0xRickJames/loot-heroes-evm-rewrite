@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from '@metaplex-foundation/beet'
-import * as web3 from '@solana/web3.js'
-import * as beetSolana from '@metaplex-foundation/beet-solana'
+import * as beet from "@metaplex-foundation/beet"
+import * as web3 from "@solana/web3.js"
+import * as beetSolana from "@metaplex-foundation/beet-solana"
 
 /**
  * Arguments used to create {@link HeroGears}
@@ -80,7 +80,7 @@ export class HeroGears implements HeroGearsArgs {
    */
   static async fromAccountAddress(
     connection: web3.Connection,
-    address: web3.PublicKey,
+    address: web3.address,
     commitmentOrConfig?: web3.Commitment | web3.GetAccountInfoConfig
   ): Promise<HeroGears> {
     const accountInfo = await connection.getAccountInfo(
@@ -100,8 +100,8 @@ export class HeroGears implements HeroGearsArgs {
    * @param programId - the program that owns the accounts we are filtering
    */
   static gpaBuilder(
-    programId: web3.PublicKey = new web3.PublicKey(
-      '2XsnJYKTJ45JYDgRzkcEDQBNhjg1FaY8YhQaB9EqbQAb'
+    programId: web3.address = new web3.address(
+      "2XsnJYKTJ45JYDgRzkcEDQBNhjg1FaY8YhQaB9EqbQAb"
     )
   ) {
     return beetSolana.GpaBuilder.fromStruct(programId, heroGearsBeet)
@@ -189,16 +189,16 @@ export const heroGearsBeet = new beet.FixableBeetStruct<
   }
 >(
   [
-    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['helm', beet.coption(beet.utf8String)],
-    ['neck', beet.coption(beet.utf8String)],
-    ['shoulders', beet.coption(beet.utf8String)],
-    ['ring', beet.coption(beet.utf8String)],
-    ['chest', beet.coption(beet.utf8String)],
-    ['hands', beet.coption(beet.utf8String)],
-    ['weapon', beet.coption(beet.utf8String)],
-    ['legs', beet.coption(beet.utf8String)],
+    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
+    ["helm", beet.coption(beet.utf8String)],
+    ["neck", beet.coption(beet.utf8String)],
+    ["shoulders", beet.coption(beet.utf8String)],
+    ["ring", beet.coption(beet.utf8String)],
+    ["chest", beet.coption(beet.utf8String)],
+    ["hands", beet.coption(beet.utf8String)],
+    ["weapon", beet.coption(beet.utf8String)],
+    ["legs", beet.coption(beet.utf8String)],
   ],
   HeroGears.fromArgs,
-  'HeroGears'
+  "HeroGears"
 )

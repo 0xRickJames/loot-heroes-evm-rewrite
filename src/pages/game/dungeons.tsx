@@ -3,18 +3,17 @@ import io, { Socket } from "socket.io-client"
 import customParser from "socket.io-msgpack-parser"
 import PvpMatch from "src/components/Game/Pvp/Match"
 import { Card } from "src/utils/interfaces"
-import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import axios from "axios"
-import { Metaplex, keypairIdentity } from "@metaplex-foundation/js"
 import NavButton from "src/components/Widget/NavButton"
 import { ArrowLeftIcon } from "@heroicons/react/solid"
 import Modal from "react-modal"
 import DungeonMatchOverModal from "src/components/Game/DungeonMatchOverModal"
 import DungeonMatchFoundModal from "src/components/Game/DungeonMatchFoundModal"
 import Image from "next/image"
-import { set } from "@project-serum/anchor/dist/cjs/utils/features"
 import CoinFlipModal from "src/components/Game/CoinFlipModal"
 import sounds from "../../utils/sounds"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
 // Element icons
 const lightElement = "/img/game/light.png"
@@ -40,8 +39,8 @@ export type Match = {
   players: {
     [socketId: string]: MatchPlayer
   }
-  playerOnePublicKey: string
-  playerTwoPublicKey: string
+  playerOneaddress: string
+  playerTwoaddress: string
   board: (BoardCard | null)[][]
   matchId: string
   turnNumber: number
@@ -152,8 +151,8 @@ export default function DungeonPage() {
     setSoundsEnabled(storedValue === "true")
   }
 
-  const wallet = useAnchorWallet()
-  const publicKey: string = wallet?.publicKey?.toString()
+  const wallet = useContext(EvmWalletContext)
+  const address: string = wallet?.address?.toString()
   const [playerData, setPlayerData] = useState({
     playerName: "",
     playerPfp: "",
@@ -165,15 +164,12 @@ export default function DungeonPage() {
   const [previousTurnBoard, setPreviousTurnBoard] =
     useState<BoardCard[][]>(null)
 
-  const updateLastUsedDeck = async (
-    publicKey: string,
-    lastUsedDeck: string
-  ) => {
+  const updateLastUsedDeck = async (address: string, lastUsedDeck: string) => {
     try {
-      const encodedPublicKey = encodeURIComponent(publicKey)
+      const encodedaddress = encodeURIComponent(address)
       const encodedLastUsedDeck = encodeURIComponent(lastUsedDeck)
       const response = await axios.put(
-        `/api/last-used-deck?publicKey=${encodedPublicKey}&lastUsedDeck=${encodedLastUsedDeck}`
+        `/api/last-used-deck?address=${encodedaddress}&lastUsedDeck=${encodedLastUsedDeck}`
       )
       // ... rest of your logic
     } catch (error) {
@@ -185,22 +181,22 @@ export default function DungeonPage() {
     target: { value: React.SetStateAction<string> }
   }) => {
     setDeckName(event.target.value.toString())
-    if (publicKey) {
-      updateLastUsedDeck(publicKey, event.target.value.toString())
+    if (address) {
+      updateLastUsedDeck(address, event.target.value.toString())
     }
   }
 
   const fetchDeckNames = async () => {
-    await axios.get(`/api/decks?owner=${publicKey}`).then((response) => {
+    await axios.get(`/api/decks?owner=${address}`).then((response) => {
       const allDecks = response.data.map((deck: { name: any }) => deck.name)
       setDeckNames([...allDecks, "Default Deck"])
     })
   }
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         setPlayerData(data)
@@ -214,7 +210,7 @@ export default function DungeonPage() {
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
   useEffect(() => {
     const storedValue = localStorage.getItem("soundsEnabled")
     setSoundsEnabled(storedValue === "true")
@@ -912,7 +908,7 @@ export default function DungeonPage() {
                     startingDungeon()
                     closeDungeonModal()
                     socket.current.emit("startDungeon", {
-                      publicKey: publicKey,
+                      address: address,
                       deckName: deckName,
                       matchType: "dungeon",
                       aiDeck: dungeon,
@@ -950,7 +946,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -991,7 +987,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1032,7 +1028,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1073,7 +1069,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1117,7 +1113,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1158,7 +1154,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1199,7 +1195,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1240,7 +1236,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1281,7 +1277,7 @@ export default function DungeonPage() {
                       startingDungeon()
                       closeDungeonModal()
                       socket.current.emit("startDungeon", {
-                        publicKey: publicKey,
+                        address: address,
                         deckName: deckName,
                         matchType: "dungeon",
                         aiDeck: dungeon,
@@ -1332,7 +1328,7 @@ export default function DungeonPage() {
         socket={socket.current}
         currentDungeon={currentDungeon}
         nextDungeon={nextDungeon}
-        publicKey={publicKey}
+        address={address}
         deckName={deckName}
         setDungeonName={setDungeonName}
         startingDungeon={startingDungeon}

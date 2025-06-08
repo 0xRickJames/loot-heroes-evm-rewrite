@@ -1,7 +1,7 @@
 import {
   Connection,
   Keypair,
-  PublicKey,
+  address,
   SystemProgram,
   TransactionInstruction,
   SYSVAR_SLOT_HASHES_PUBKEY,
@@ -46,17 +46,17 @@ import { u32 } from "@metaplex-foundation/beet"
 import allowList from "../../allowlist.json"
 
 export const CANDY_MACHINE_PROGRAM = PROGRAM_ID
-export const METAPLEX_PROGRAM_ID = new PublicKey(
+export const METAPLEX_PROGRAM_ID = new address(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 )
 
 /** To mint from the candy guard as a minter */
 /** From: https://github.com/metaplex-foundation/mpl-candy-guard/blob/main/js/test/setup/txs-init.ts#L679  */
 export async function mintV2Instruction(
-  candyGuard: PublicKey,
-  candyMachine: PublicKey,
-  minter: PublicKey,
-  payer: PublicKey,
+  candyGuard: address,
+  candyMachine: address,
+  minter: address,
+  payer: address,
   mint: Keypair,
   connection: Connection,
   metaplex: Metaplex,
@@ -70,15 +70,15 @@ export async function mintV2Instruction(
     candyMachine
   )
 
-  const nftMetadata = metaplex.nfts().pdas().metadata({ mint: mint.publicKey })
+  const nftMetadata = metaplex.nfts().pdas().metadata({ mint: mint.address })
   const nftMasterEdition = metaplex
     .nfts()
     .pdas()
-    .masterEdition({ mint: mint.publicKey })
+    .masterEdition({ mint: mint.address })
   const nftTokenAccount = metaplex
     .tokens()
     .pdas()
-    .associatedTokenAccount({ mint: mint.publicKey, owner: minter })
+    .associatedTokenAccount({ mint: mint.address, owner: minter })
 
   const authorityPda = metaplex
     .candyMachines()
@@ -119,7 +119,7 @@ export async function mintV2Instruction(
     candyMachineAuthorityPda: authorityPda,
     nftMasterEdition: nftMasterEdition,
     nftMetadata,
-    nftMint: mint.publicKey,
+    nftMint: mint.address,
     nftMintAuthority: payer,
     token: nftTokenAccount,
     collectionUpdateAuthority: collection.updateAuthorityAddress,
@@ -139,7 +139,7 @@ export async function mintV2Instruction(
     accounts.tokenRecord = metaplex
       .nfts()
       .pdas()
-      .tokenRecord({ mint: mint.publicKey, token: nftTokenAccount })
+      .tokenRecord({ mint: mint.address, token: nftTokenAccount })
   }
 
   if (!mintArgs) {
@@ -157,7 +157,7 @@ export async function mintV2Instruction(
   // this test always initializes the mint, we we need to set the
   // account to be writable and a signer to avoid warnings
   for (let i = 0; i < mintIx.keys.length; i++) {
-    if (mintIx.keys[i].pubkey.toBase58() === mint.publicKey.toBase58()) {
+    if (mintIx.keys[i].pubkey.toBase58() === mint.address.toBase58()) {
       mintIx.keys[i].isSigner = true
       mintIx.keys[i].isWritable = true
     }
@@ -188,7 +188,7 @@ export async function mintV2Instruction(
   return { instructions: ixs }
 }
 
-const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
+const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new address(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 )
 
@@ -203,7 +203,7 @@ export const getRemainingAccountsByGuardType = ({
   guardType,
 }: {
   candyMachine: CandyMachineType<DefaultCandyGuardSettings>
-  payer: PublicKey
+  payer: address
   guard: Option<SolPaymentGuardSettings | object>
   guardType: string
 }) => {
@@ -220,7 +220,7 @@ export const getRemainingAccountsByGuardType = ({
     tokenGate: () => {
       const tokenGateGuard = guard as TokenGateGuardSettings
 
-      const [tokenAccount] = PublicKey.findProgramAddressSync(
+      const [tokenAccount] = address.findProgramAddressSync(
         [
           payer.toBuffer(),
           TOKEN_PROGRAM_ID.toBuffer(),
@@ -279,7 +279,7 @@ export const getRemainingAccountsByGuardType = ({
         label: null,
       }
 
-      const [proofPda] = PublicKey.findProgramAddressSync(
+      const [proofPda] = address.findProgramAddressSync(
         [
           Buffer.from("allow_list"),
           merkleRoot,
@@ -320,7 +320,7 @@ export const getRemainingAccountsByGuardType = ({
       if (!candyMachine.candyGuard) return {}
       const mintLimitGuard = guard as MintLimitGuardSettings
 
-      const [mintCounterPda] = PublicKey.findProgramAddressSync(
+      const [mintCounterPda] = address.findProgramAddressSync(
         [
           Buffer.from("mint_limit"),
           new Uint8Array([mintLimitGuard.id]),
@@ -345,7 +345,7 @@ export const getRemainingAccountsByGuardType = ({
       if (!candyMachine.candyGuard) return {}
       const tokenBurnGuard = guard as TokenBurnGuardSettings
 
-      const [mintBurnPda] = PublicKey.findProgramAddressSync(
+      const [mintBurnPda] = address.findProgramAddressSync(
         [
           payer.toBuffer(),
           TOKEN_PROGRAM_ID.toBuffer(),
@@ -386,7 +386,7 @@ export const getRemainingAccountsByGuardType = ({
 
 export const getRemainingAccountsForCandyGuard = (
   candyMachine: CandyMachineType<DefaultCandyGuardSettings>,
-  payer: PublicKey
+  payer: address
 ) => {
   if (!candyMachine.candyGuard) return {}
 

@@ -11,7 +11,7 @@ import {
   clusterApiUrl,
   Keypair,
   sendAndConfirmTransaction,
-  PublicKey,
+  address,
 } from "@solana/web3.js"
 import {
   getOrCreateAssociatedTokenAccount,
@@ -32,7 +32,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { solAmount, publicKey } = req.body
+  const { solAmount, address } = req.body
   try {
     // Create a new transaction
 
@@ -41,8 +41,8 @@ export default async function handler(
     )
     const transaction = new Transaction()
 
-    const ownerPublicKey: PublicKey = new PublicKey(publicKey)
-    transaction.feePayer = ownerPublicKey
+    const owneraddress: address = new address(address)
+    transaction.feePayer = owneraddress
     const merchantPrivateKey = process.env.MERCHANT_PRIVATE_KEY
     const gwenAddress = process.env.NEXT_PUBLIC_GWEN_ADDRESS
     console.log("make merchant keypair")
@@ -56,22 +56,22 @@ export default async function handler(
     const sourceTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       merchantKeypair,
-      new PublicKey(gwenAddress),
-      merchantKeypair.publicKey
+      new address(gwenAddress),
+      merchantKeypair.address
     )
     console.log("getting destination")
     const destinationTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       merchantKeypair,
-      new PublicKey(gwenAddress),
-      ownerPublicKey
+      new address(gwenAddress),
+      owneraddress
     )
     console.log("more instructions")
     transaction.add(
       createTransferInstruction(
         sourceTokenAccount.address,
         destinationTokenAccount.address,
-        merchantKeypair.publicKey,
+        merchantKeypair.address,
         solAmount * 10000 * Math.pow(10, 2),
         [],
         TOKEN_PROGRAM_ID
@@ -81,8 +81,8 @@ export default async function handler(
     // Add SOL transfer instruction
     transaction.add(
       SystemProgram.transfer({
-        fromPubkey: ownerPublicKey,
-        toPubkey: merchantKeypair.publicKey,
+        fromPubkey: owneraddress,
+        toPubkey: merchantKeypair.address,
         lamports: solAmount * LAMPORTS_PER_SOL,
       })
     )

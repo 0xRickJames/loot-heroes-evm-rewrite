@@ -1,5 +1,3 @@
-import { useWallet } from "@solana/wallet-adapter-react"
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
@@ -14,16 +12,9 @@ import sounds from "../../utils/sounds"
 import Image from "next/image"
 import Modal from "react-modal"
 import { useCallback, useEffect, useState, useMemo } from "react"
-import {
-  Connection,
-  Transaction,
-  TransactionInstruction,
-  LAMPORTS_PER_SOL,
-  clusterApiUrl,
-  Keypair,
-  PublicKey,
-} from "@solana/web3.js"
 import { InfinitySpin } from "react-loader-spinner"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
 function truncateString(input: string): string {
   if (input.length <= 8) {
@@ -82,7 +73,9 @@ export default function GameNew(props: Props) {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
   }
-  const { publicKey, sendTransaction, connected, signTransaction } = useWallet()
+  const { address, connect, disconnect, signer, provider } =
+    useContext(EvmWalletContext)
+
   const [unclaimedGwen, setUnclaimeGwen] = useState(0)
   const [lastClaimTimestamp, setLastClaimTimestamp] = useState(0)
   const [isClaimGwenModalOpen, setIsClaimGwenModalOpen] = useState(false)
@@ -93,10 +86,10 @@ export default function GameNew(props: Props) {
   const [error, setError] = useState(null)
   // Fetch stats for unclaimed GWEN rewards and the timestamp for the last claim
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         console.log(data.unclaimedGwen, data.lastClaimTimestamp)
@@ -106,11 +99,11 @@ export default function GameNew(props: Props) {
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
   React.useEffect(() => {
     fetchPlayerData()
   }, [fetchPlayerData])
-  async function handleGwenClaim(publicKey: string, timestamp: number) {
+  async function handleGwenClaim(address: string, timestamp: number) {
     setIsClaiming(true)
     setError(null)
   }
@@ -135,7 +128,7 @@ export default function GameNew(props: Props) {
     switch (selectedMatchType) {
       case "pvp":
         socket.current.emit("findMatch", {
-          publicKey: publicKey,
+          address: address,
           deckName: deckName,
           matchType: "normal",
         })
@@ -306,7 +299,7 @@ export default function GameNew(props: Props) {
                   ))}
                 </select>
               </label>
-              {publicKey ? (
+              {address ? (
                 <NewButton
                   onMouseOver={() => {
                     sounds.highlightButton()
@@ -321,19 +314,18 @@ export default function GameNew(props: Props) {
                   {isFinding ? "Finding..." : "Play"}
                 </NewButton>
               ) : (
-                <WalletMultiButton
+                <button
+                  className="new-button text-2xl text-white bg-yellow-600 hover:bg-yellow-500 rounded-md px-4 py-2"
+                  onMouseOver={() => {
+                    sounds.highlightButton()
+                  }}
                   onClick={() => {
                     sounds.buttonClick()
-                  }}
-                  style={{
-                    alignSelf: "stretch",
-                    flex: 1,
+                    connect()
                   }}
                 >
-                  {!publicKey
-                    ? "Connect"
-                    : truncateString(publicKey?.toString())}
-                </WalletMultiButton>
+                  Connect Wallet
+                </button>
               )}
             </div>
             <div className="select-match-type">
@@ -435,7 +427,7 @@ export default function GameNew(props: Props) {
                 sounds.buttonClick()
                 setIsClaimGwenModalOpen(false)
                 setIsClaimButtonDisabled(true)
-                handleGwenClaim(publicKey.toString(), Date.now())
+                handleGwenClaim(address.toString(), Date.now())
               }}
             >
               Claim

@@ -2,7 +2,7 @@
 import environment from "src/environments/production"
 import { plainToClass, Transform } from "class-transformer"
 import { ExternalMetaplexNft } from "./metaplex.interface"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import { Errors, GenericError } from "./errors"
 
 export interface LegendaryLootEntity {
@@ -177,11 +177,11 @@ abstract class BaseLegendaryLootEntity implements LegendaryLootEntity {
     return this.externalMetaplexNft.externalMetadata.image
   }
 
-  getTokenAccount(): PublicKey {
-    return this.externalMetaplexNft.publicKey
+  getTokenAccount(): address {
+    return this.externalMetaplexNft.address
   }
 
-  getTokenMint(): PublicKey {
+  getTokenMint(): address {
     return this.externalMetaplexNft.mint
   }
 

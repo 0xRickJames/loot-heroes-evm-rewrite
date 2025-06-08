@@ -6,7 +6,7 @@ import {
   clusterApiUrl,
   Keypair,
   sendAndConfirmTransaction,
-  PublicKey,
+  address,
 } from "@solana/web3.js"
 import {
   getOrCreateAssociatedTokenAccount,
@@ -23,8 +23,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { db } = await connectToMongodbPlayers()
-  const { timestamp, publicKey } = req.body
-  const player = await db.collection("players").findOne({ player: publicKey })
+  const { timestamp, address } = req.body
+  const player = await db.collection("players").findOne({ player: address })
   let unclaimedGwen = 0
   if (player) {
     unclaimedGwen = player.unclaimedGwen
@@ -35,7 +35,7 @@ export default async function handler(
     }
   }
   db.collection("players").updateOne(
-    { player: publicKey },
+    { player: address },
     { $set: { lastClaimTimestamp: timestamp } }
   )
 
@@ -47,8 +47,8 @@ export default async function handler(
     )
     const transaction = new Transaction()
 
-    const ownerPublicKey: PublicKey = new PublicKey(publicKey)
-    transaction.feePayer = ownerPublicKey
+    const owneraddress: address = new address(address)
+    transaction.feePayer = owneraddress
     const merchantPrivateKey = process.env.MERCHANT_PRIVATE_KEY
     const gwenAddress = process.env.NEXT_PUBLIC_GWEN_ADDRESS
     console.log("make merchant keypair")
@@ -62,22 +62,22 @@ export default async function handler(
     const sourceTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       merchantKeypair,
-      new PublicKey(gwenAddress),
-      merchantKeypair.publicKey
+      new address(gwenAddress),
+      merchantKeypair.address
     )
     console.log("getting destination")
     const destinationTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       merchantKeypair,
-      new PublicKey(gwenAddress),
-      ownerPublicKey
+      new address(gwenAddress),
+      owneraddress
     )
     console.log("more instructions")
     transaction.add(
       createTransferInstruction(
         sourceTokenAccount.address,
         destinationTokenAccount.address,
-        merchantKeypair.publicKey,
+        merchantKeypair.address,
         unclaimedGwen * Math.pow(10, 2),
         [],
         TOKEN_PROGRAM_ID

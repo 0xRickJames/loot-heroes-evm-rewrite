@@ -1,4 +1,4 @@
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 
 export function asError(err: unknown): Error {
   return err as Error
@@ -53,12 +53,12 @@ export class GenericError extends Error {
     return this
   }
 
-  withOwnerWallet(wallet: PublicKey) {
+  withOwnerWallet(wallet: address) {
     this.parameters.set("ownerWallet", wallet.toString())
     return this
   }
 
-  withOtherWallets(wallets: Record<string, PublicKey>) {
+  withOtherWallets(wallets: Record<string, address>) {
     Object.keys(wallets).forEach((key) => {
       this.parameters.set(key, wallets[key].toString())
     })

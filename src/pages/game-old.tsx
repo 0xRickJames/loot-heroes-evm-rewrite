@@ -28,7 +28,7 @@ export default function PvpPage() {
     isMatchOverModalOpen,
     setIsMatchOverModalOpen,
   } = usePvpGame()
-  const { publicKey } = useWallet()
+  const { address } = useWallet()
 
   const matchOverModalModalStyles = {
     content: {
@@ -79,7 +79,7 @@ export default function PvpPage() {
                 </select>
               </label>
 
-              {!publicKey ? (
+              {!address ? (
                 <WalletMultiButton
                   className="px-4 py-2 group bg-button inline-block group-hover:bg-opacity-75"
                   style={{ backgroundSize: "100% 100%" }}
@@ -87,11 +87,11 @@ export default function PvpPage() {
                   <span
                     className={`text-black group-hover:text-gray-700 font-semibold inline-flex items-center play-button`}
                   >
-                    {!publicKey
+                    {!address
                       ? "Connect"
-                      : publicKey.toString().slice(0, 4) +
+                      : address.toString().slice(0, 4) +
                         ".." +
-                        publicKey.toString().slice(-4)}
+                        address.toString().slice(-4)}
                   </span>
                 </WalletMultiButton>
               ) : (
@@ -100,7 +100,7 @@ export default function PvpPage() {
                     e.preventDefault()
 
                     socket.current.emit("findMatch", {
-                      publicKey: publicKey,
+                      address: address,
                       deckName: deckName,
                       matchType: "normal",
                     })

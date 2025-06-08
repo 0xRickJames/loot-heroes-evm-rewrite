@@ -1,5 +1,5 @@
 import { Connection } from "@metaplex/js"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
 import { SolanaToken, TokenQueryOptions } from "./solana.interface"
 
@@ -36,13 +36,13 @@ export class SolanaService {
         return amount.decimals === queryOptions.decimalsAmount
       })
       .map((t) => ({
-        publicKey: new PublicKey(t.pubkey),
-        mint: new PublicKey(t.account.data.parsed.info.mint),
+        address: new address(t.pubkey),
+        mint: new address(t.account.data.parsed.info.mint),
         amount: t.account.data.parsed.info.tokenAmount.uiAmount,
       }))
   }
 
-  async getTokenBalance(owner: PublicKey, mint: PublicKey): Promise<number> {
+  async getTokenBalance(owner: address, mint: address): Promise<number> {
     const tokens = await this.connection.getParsedTokenAccountsByOwner(owner, {
       programId: TOKEN_PROGRAM_ID,
     })

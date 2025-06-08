@@ -17,7 +17,7 @@ interface DungeonMatchOverModalProps {
   socket: Socket
   currentDungeon: string
   nextDungeon: string
-  publicKey: string
+  address: string
   deckName: string
   setDungeonName: (dungeonName: string) => void
   startingDungeon: () => void
@@ -37,7 +37,7 @@ const DungeonMatchOverModal: React.FC<DungeonMatchOverModalProps> = ({
   socket,
   currentDungeon,
   nextDungeon,
-  publicKey,
+  address,
   deckName,
   setDungeonName,
   startingDungeon,
@@ -226,7 +226,7 @@ const DungeonMatchOverModal: React.FC<DungeonMatchOverModalProps> = ({
                   setDungeonName(nextDungeon)
                   startingDungeon()
                   socket.emit("startDungeon", {
-                    publicKey: publicKey,
+                    address: address,
                     deckName: deckName,
                     matchType: "dungeon",
                     aiDeck: nextDungeon,
@@ -256,7 +256,7 @@ const DungeonMatchOverModal: React.FC<DungeonMatchOverModalProps> = ({
                 setDungeonName(currentDungeon)
                 startingDungeon()
                 socket.emit("startDungeon", {
-                  publicKey: publicKey,
+                  address: address,
                   deckName: deckName,
                   matchType: "dungeon",
                   aiDeck: currentDungeon,

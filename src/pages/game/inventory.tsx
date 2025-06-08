@@ -30,7 +30,7 @@ type Props = {}
 export default function Inventory(props: Props) {
   const [isFilterGearModalOpen, setIsFilterGearModalOpen] = useState(false)
   const [isFilterHeroModalOpen, setIsFilterHeroModalOpen] = useState(false)
-  const { publicKey, signTransaction } = useWallet()
+  const { address, signTransaction } = useWallet()
   const { connection } = useConnection()
   const [selectedHeroNft, setSelectedHeroNft] = useState<LootHeroesNft>(null)
   const [selectedHeroNftData, setSelectedHeroNftData] =
@@ -851,7 +851,7 @@ function getLegendaryLootItemFromGearId(
       ],
     },
     mint: gearNft?.mint.address,
-    publicKey: gearNft?.address,
+    address: gearNft?.address,
   } as ExternalMetaplexNft)
 
   item.set = set

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import {
-  PublicKey,
+  address,
   Transaction,
   Keypair,
   clusterApiUrl,
@@ -24,13 +24,13 @@ export default async function handler(
   const connection = new Connection(
     "https://lively-ultra-lambo.solana-mainnet.quiknode.pro/72c8ec506f45d1f495fcfe29fe00c039a322a863/"
   )
-  const userWalletAddress = new PublicKey(req.body.userWalletAddress)
+  const userWalletAddress = new address(req.body.userWalletAddress)
   const tsfWalletAddress = Keypair.fromSecretKey(walletSecretKey)
 
   const payingTokenAddressAsString = req.body.payingTokenAddressAsString
   const isSolanaTransaction = payingTokenAddressAsString === "solana"
 
-  const receivingTokenAddress = new PublicKey(req.body.receivingTokenAddress)
+  const receivingTokenAddress = new address(req.body.receivingTokenAddress)
 
   const payingAmount: number = req.body.payingAmount
   const receivingAmount: number = req.body.receivingAmount
@@ -41,7 +41,7 @@ export default async function handler(
   )
   const tsfReceivingTokenAccount = await getAssociatedTokenAddress(
     receivingTokenAddress,
-    tsfWalletAddress.publicKey
+    tsfWalletAddress.address
   )
 
   // Get block hash
@@ -74,12 +74,12 @@ export default async function handler(
     transaction.add(
       SystemProgram.transfer({
         fromPubkey: userWalletAddress,
-        toPubkey: tsfWalletAddress.publicKey,
+        toPubkey: tsfWalletAddress.address,
         lamports: payingAmount * 10 ** SOLANA_DECIMALS,
       })
     )
   } else {
-    const payingTokenAddress = new PublicKey(payingTokenAddressAsString)
+    const payingTokenAddress = new address(payingTokenAddressAsString)
 
     // Create associated token accounts for my token if they don't exist yet
     const userPayingTokenAccount = await getAssociatedTokenAddress(
@@ -88,7 +88,7 @@ export default async function handler(
     )
     const tsfPayingTokenAccount = await getAssociatedTokenAddress(
       payingTokenAddress,
-      tsfWalletAddress.publicKey
+      tsfWalletAddress.address
     )
 
     // Get mint
@@ -111,7 +111,7 @@ export default async function handler(
       tsfReceivingTokenAccount, // source
       receivingTokenAddress, // mint
       userReceivingTokenAccount, // destination
-      tsfWalletAddress.publicKey, // owner of source account
+      tsfWalletAddress.address, // owner of source account
       receivingAmount * 10 ** receivingTokenMint.decimals,
       receivingTokenMint.decimals
     )

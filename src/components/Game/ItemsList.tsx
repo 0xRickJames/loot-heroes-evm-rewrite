@@ -18,7 +18,7 @@ import {
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { useMediaQuery } from "@mui/material"
 import { Metadata, Metaplex } from "@metaplex-foundation/js"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import { MetaplexMetadataCacheEntry } from "src/library/metaplex.interface"
 import { LootHeroesNft } from "src/pages/api/gears"
 
@@ -27,7 +27,7 @@ export type ItemsProps = {
   listChildren?: any
 }
 
-const GEARS_COLLECTION_CREATOR_ADDRESS = new PublicKey(
+const GEARS_COLLECTION_CREATOR_ADDRESS = new address(
   "EMYBHGCAeBPRHxfFEuhRjszKsP5YLaFXubjeWJuVdieZ"
 )
 
@@ -39,16 +39,16 @@ export function ItemsList(props: ItemsProps) {
   const [items, setItems] = useState<LegendaryLootItem[]>()
   const { connection } = useConnection()
   const wallet = useWallet()
-  const { publicKey } = wallet
+  const { address } = wallet
 
   useAsyncEffect(async () => {
-    if (wallet.publicKey) {
+    if (wallet.address) {
       setIsLoading(true)
 
       const metaplex = new Metaplex(connection)
 
       const nfts = await metaplex.nfts().findAllByOwner({
-        owner: publicKey,
+        owner: address,
       })
 
       const gearNfts = nfts.filter((nft) =>
@@ -78,7 +78,7 @@ export function ItemsList(props: ItemsProps) {
           mint: normal.mint.address.toString(),
         } as MetaplexMetadataCacheEntry,
         externalMetadata: normal.json,
-        publicKey: normal.address,
+        address: normal.address,
         amount: 1,
       }))
 
@@ -95,7 +95,7 @@ export function ItemsList(props: ItemsProps) {
     }
   }, [wallet])
 
-  return !wallet.publicKey ? (
+  return !wallet.address ? (
     <p>Please, connect your wallet first!</p>
   ) : (
     <>

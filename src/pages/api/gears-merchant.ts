@@ -57,7 +57,7 @@ export default async function handler(
       .use(bundlrStorage())
 
     const nft: LootHeroesNft = await metaplex.nfts().findByMint({
-      mintAddress: new web3.PublicKey(mint),
+      mintAddress: new web3.address(mint),
     })
 
     const tx = new Transaction()
@@ -65,8 +65,8 @@ export default async function handler(
       await connection.getLatestBlockhash()
     ).blockhash
 
-    const ownerPublicKey = new web3.PublicKey(owner)
-    tx.feePayer = ownerPublicKey
+    const owneraddress = new web3.address(owner)
+    tx.feePayer = owneraddress
 
     // --- 2. Start the instructions to equip the Gear ---
 

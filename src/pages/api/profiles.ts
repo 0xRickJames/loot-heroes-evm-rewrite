@@ -11,11 +11,9 @@ export default async function handler(
 
   switch (method) {
     case "GET":
-      const { publicKey } = req.query // Assuming the publicKey is passed as a query parameter
+      const { address } = req.query // Assuming the address is passed as a query parameter
       const collection = await db.collection("players")
-      const player = await db
-        .collection("players")
-        .findOne({ player: publicKey })
+      const player = await db.collection("players").findOne({ player: address })
 
       if (player) {
         const {
@@ -57,8 +55,8 @@ export default async function handler(
       } else if (!player) {
         const defaultValues = {
           _id: new ObjectId(),
-          player: publicKey,
-          playerName: publicKey,
+          player: address,
+          playerName: address,
           eloNormal: 1000,
           averageTurnTime: 0,
           winsNormal: 0,
@@ -86,7 +84,7 @@ export default async function handler(
 
     case "PUT":
       const {
-        publicKey: updatePublicKey,
+        address: updateaddress,
         playerName: updatePlayerName,
         playerPfp: updatePlayerPfp,
       } = req.query
@@ -103,7 +101,7 @@ export default async function handler(
 
         const updateResult = await db
           .collection("players")
-          .updateOne({ player: updatePublicKey }, { $set: updateFields })
+          .updateOne({ player: updateaddress }, { $set: updateFields })
 
         if (updateResult.modifiedCount > 0) {
           res

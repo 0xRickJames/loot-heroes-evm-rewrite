@@ -6,7 +6,7 @@ import { Card } from "src/utils/interfaces"
 import axios from "axios"
 import { GameLayout } from "src/components/Game/GameLayout"
 
-import { Connection, PublicKey } from "@solana/web3.js"
+import { Connection, address } from "@solana/web3.js"
 import { useRouter } from "next/router"
 
 import { fromTxError } from "../../utils/errors"
@@ -20,7 +20,7 @@ import {
   mplCandyMachine,
 } from "@metaplex-foundation/mpl-candy-machine"
 import {
-  publicKey as umiPublicKey,
+  address as umiaddress,
   some,
   unwrapOption,
 } from "@metaplex-foundation/umi"
@@ -52,8 +52,8 @@ export type Match = {
   players: {
     [socketId: string]: MatchPlayer
   }
-  playerOnePublicKey: string
-  playerTwoPublicKey: string
+  playerOneaddress: string
+  playerTwoaddress: string
   board: (BoardCard | null)[][]
   matchId: string
   turnNumber: number
@@ -121,8 +121,8 @@ export default function TournamentPvpPage() {
   const [currentMatch, setCurrentMatch] = useState<Match>(null)
 
   const wallet = useWallet()
-  const publicKey: PublicKey = wallet?.publicKey
-  const publicKeyString: string = wallet?.publicKey?.toString()
+  const address: address = wallet?.address
+  const addressString: string = wallet?.address?.toString()
 
   const [deckNames, setDeckNames] = useState<string[]>(["Default Deck"])
   const [deckName, setDeckName] = useState("Default Deck")
@@ -137,7 +137,7 @@ export default function TournamentPvpPage() {
   }
 
   const fetchDeckNames = async () => {
-    await axios.get(`/api/decks?owner=${publicKey}`).then((response) => {
+    await axios.get(`/api/decks?owner=${address}`).then((response) => {
       const allDecks = response.data.map((deck: { name: any }) => deck.name)
       setDeckNames([...allDecks, "Default Deck"])
     })
@@ -150,10 +150,10 @@ export default function TournamentPvpPage() {
   }
 
   useEffect(() => {
-    if (publicKey) {
+    if (address) {
       fetchDeckNames()
     }
-  }, [publicKey])
+  }, [address])
 
   // Listen to state changes and re-attach the listener
   // So that we can have the `currentMatch` variable updated in the callback
@@ -300,8 +300,8 @@ export default function TournamentPvpPage() {
 
   const fetchCandyMachineData = useCallback(async () => {
     if (!candyMachineId) throw new Error("candyMachineId not found")
-    const candyMachinePublicKey = umiPublicKey(candyMachineId)
-    const candyMachine = await fetchCandyMachine(umi, candyMachinePublicKey)
+    const candyMachineaddress = umiaddress(candyMachineId)
+    const candyMachine = await fetchCandyMachine(umi, candyMachineaddress)
     const candyGuard = await fetchCandyGuard(umi, candyMachine.mintAuthority)
 
     setCandyMachine(candyMachine)
@@ -364,12 +364,12 @@ export default function TournamentPvpPage() {
         .add(setComputeUnitLimit(umiWalletAdapter, { units: 800_000 }))
         .add(
           mintV2(umiWalletAdapter, {
-            candyMachine: candyMachine.publicKey,
+            candyMachine: candyMachine.address,
             nftMint,
             collectionMint: candyMachine.collectionMint,
             collectionUpdateAuthority: candyMachine.authority,
             tokenStandard: candyMachine.tokenStandard,
-            candyGuard: candyGuard?.publicKey,
+            candyGuard: candyGuard?.address,
             mintArgs,
           })
         )
@@ -426,7 +426,7 @@ export default function TournamentPvpPage() {
               </div>
               <button
                 className="bg-button bg-center bg-contain bg-no-repeat h-12 w-48 self-center lg:h-20 text-black font-bold text-xl lg:text-3xl lg:p-6"
-                disabled={!publicKey || isLoading}
+                disabled={!address || isLoading}
                 onClick={mint}
               >
                 {isLoading ? "Minting your NFT..." : "Mint Ticket"}
@@ -473,7 +473,7 @@ export default function TournamentPvpPage() {
                 </select>
               </label>
 
-              {!publicKey ? (
+              {!address ? (
                 <WalletMultiButton
                   className="px-4 py-2 group bg-button inline-block group-hover:bg-opacity-75"
                   style={{ backgroundSize: "100% 100%" }}
@@ -483,20 +483,20 @@ export default function TournamentPvpPage() {
                   >
                     {!wallet
                       ? "Connect"
-                      : publicKeyString.slice(0, 4) +
+                      : addressString.slice(0, 4) +
                         ".." +
-                        publicKeyString.slice(-4)}
+                        addressString.slice(-4)}
                   </span>
                 </WalletMultiButton>
               ) : (
                 <button
                   onClick={(e) => {
                     e.preventDefault()
-                    if (publicKey !== wallet?.publicKey) {
+                    if (address !== wallet?.address) {
                       handleReload()
                     } else {
                       socket.current.emit("findMatch", {
-                        publicKey: publicKeyString,
+                        address: addressString,
                         deckName: deckName,
                         matchType: "tournament",
                       })

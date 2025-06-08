@@ -13,7 +13,7 @@ import { HideIfLoading } from "src/components/Widget/HideIfLoading"
 import { WalletAware } from "src/components/Game/Common"
 import InteractiveButton from "src/components/Widget/InteractiveButton"
 import { RevealService } from "src/library/reveal.service"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import { metaplexCache } from "src/library/metaplex.interface"
 import { Container } from "src/components/Container"
 import Header from "src/components/Game/Header"
@@ -38,13 +38,13 @@ export const Item: React.FC<WalletAware> = (props: WalletAware) => {
 
   useEffect(() => {
     ;(async () => {
-      if (item === undefined && !isLoading && wallet?.publicKey) {
+      if (item === undefined && !isLoading && wallet?.address) {
         setIsLoading(true)
 
         await metaplexCache.metaplexMetadatas.delete(query.nftId as string)
 
         const itemFrom = await nftBridge.getItem(
-          wallet?.publicKey,
+          wallet?.address,
           query.nftId as string
         )
 
@@ -52,7 +52,7 @@ export const Item: React.FC<WalletAware> = (props: WalletAware) => {
         setIsLoading(false)
       }
     })()
-  }, [item, wallet?.publicKey])
+  }, [item, wallet?.address])
 
   const revealItem = async () => {
     if (!item) return

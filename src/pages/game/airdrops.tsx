@@ -16,17 +16,17 @@ export const Airdrops: React.FC<WalletAware> = () => {
   const { connection } = useConnection()
   const wallet = useWallet()
 
-  const { publicKey } = wallet
+  const { address } = wallet
   const [chestCoins, setChestCoins] = useState<ChestCoin[]>()
 
   const nftBridge = new LegendaryLootService(connection)
 
   useAsyncEffect(async () => {
-    if (wallet.publicKey) {
+    if (wallet.address) {
       if (chestCoins !== undefined) return
       setIsLoading(true)
 
-      const itemsFrom = await nftBridge.getChestCoins(publicKey)
+      const itemsFrom = await nftBridge.getChestCoins(address)
 
       setChestCoins(itemsFrom)
       setIsLoading(false)
@@ -58,7 +58,7 @@ export const Airdrops: React.FC<WalletAware> = () => {
     <Container header={null}>
       <div className="container mb-8 mt-10">
         <div className="w-full">
-          {!wallet.publicKey ? (
+          {!wallet.address ? (
             "Please, connect your wallet first!"
           ) : (
             <>

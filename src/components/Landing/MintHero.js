@@ -15,7 +15,7 @@ function MintHero() {
                     <div>
                         { wallet ?
                             <>
-                                {wallet.publicKey.toBase58()}
+                                {wallet.address.toBase58()}
                             </> :
                             <>
                                 Please connect your wallet first

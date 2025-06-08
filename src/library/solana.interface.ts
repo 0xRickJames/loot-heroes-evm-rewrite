@@ -1,8 +1,8 @@
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 
 export interface SolanaToken {
-  publicKey: PublicKey
-  mint: PublicKey
+  address: address
+  mint: address
   amount: number
 }
 
@@ -13,5 +13,5 @@ export interface TokenQueryOptions {
   offset?: number
   tokensAmount: number
   decimalsAmount: number
-  owner: PublicKey
+  owner: address
 }

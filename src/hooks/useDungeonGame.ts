@@ -5,7 +5,7 @@ import { Card } from "src/utils/interfaces"
 import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import axios from "axios"
 import { Metaplex, keypairIdentity } from "@metaplex-foundation/js"
-import { Connection, Keypair, PublicKey } from "@solana/web3.js"
+import { Connection, Keypair, address } from "@solana/web3.js"
 
 // Sounds
 
@@ -51,8 +51,8 @@ export type Match = {
     [socketId: string]: MatchPlayer
   }
   board: (BoardCard | null)[][]
-  playerOnePublicKey: string
-  playerTwoPublicKey: string
+  playerOneaddress: string
+  playerTwoaddress: string
   matchId: string
   turnNumber: number
   isRedFirst: boolean
@@ -82,7 +82,7 @@ export default function useDungeonGame() {
   const [currentMatch, setCurrentMatch] = useState<Match>(null)
 
   const wallet = useAnchorWallet()
-  const publicKey: string = wallet?.publicKey?.toString()
+  const address: string = wallet?.address?.toString()
   const [playerData, setPlayerData] = useState({
     playerName: "",
     playerPfp: "",
@@ -132,17 +132,17 @@ export default function useDungeonGame() {
   }
 
   const fetchDeckNames = async () => {
-    await axios.get(`/api/decks?owner=${publicKey}`).then((response) => {
+    await axios.get(`/api/decks?owner=${address}`).then((response) => {
       const allDecks = response.data.map((deck: { name: any }) => deck.name)
       setDeckNames([...allDecks, "Default Deck"])
     })
   }
 
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         setPlayerData(data)
@@ -150,13 +150,13 @@ export default function useDungeonGame() {
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
 
   useEffect(() => {
-    if (publicKey) {
+    if (address) {
       fetchDeckNames()
     }
-  }, [publicKey])
+  }, [address])
 
   useEffect(() => {
     fetchPlayerData()

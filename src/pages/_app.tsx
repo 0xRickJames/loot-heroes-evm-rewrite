@@ -1,18 +1,25 @@
 import { initializeApp } from "firebase/app"
-
 import environment from "src/environments/production"
 
 import "reflect-metadata"
 import "es6-shim"
 
-import dynamic from "next/dynamic"
 import "../index.css"
+import "../../public/fonts/font.css"
+
+import { AppProps } from "next/app"
 import { NextPage } from "next"
 import { ReactElement, ReactNode } from "react"
-import { AppProps } from "next/app"
 
-import { WalletNFTsProvider } from "src/contexts/WalletNFTs"
-import "../../public/fonts/font.css"
+import { EvmWalletProvider } from "src/contexts/EvmWalletContext"
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
 
 const firebaseConfig = {
   apiKey: environment.firebase.apiKey,
@@ -24,32 +31,14 @@ const firebaseConfig = {
   measurementId: environment.firebase.measurementId,
 }
 
-const WalletNoSSR = dynamic(() => import("src/components/WalletProvider"), {
-  ssr: false,
-})
-
 initializeApp(firebaseConfig)
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
-
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const WalletProvider = WalletNoSSR as any
-
-  // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
   return (
-    // @ts-ignore
-    <WalletProvider>
-      <WalletNFTsProvider>
-        {getLayout(<Component {...pageProps} />)}
-      </WalletNFTsProvider>
-    </WalletProvider>
+    <EvmWalletProvider>
+      {getLayout(<Component {...pageProps} />)}
+    </EvmWalletProvider>
   )
 }

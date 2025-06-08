@@ -42,7 +42,7 @@ function MintHero2() {
                 <>
                   <p>
                     Connected wallet:{" "}
-                    <strong>{wallet.publicKey.toBase58()}</strong>
+                    <strong>{wallet.address.toBase58()}</strong>
                   </p>
                 </>
               ) : (

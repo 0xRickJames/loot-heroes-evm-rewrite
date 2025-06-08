@@ -67,10 +67,10 @@ export default {
     tokenMint: "DMkAp8aGEny6oEdWJNzwZPTL57biX6BwwGrzEF9bNRcS",
     tokenDecimals: 4,
     farm: {
-      publicKey: "FQrhCtxkHY511NJfT2WfYToMJM4SjB5TM7ZbCR2aKpkR",
+      address: "FQrhCtxkHY511NJfT2WfYToMJM4SjB5TM7ZbCR2aKpkR",
     },
     bank: {
-      publicKey: "CJZ6Po6KZJkQMLfEnwDn8GAGJ7rvqw1Ezcr33qD59fXS",
+      address: "CJZ6Po6KZJkQMLfEnwDn8GAGJ7rvqw1Ezcr33qD59fXS",
     },
   },
 }

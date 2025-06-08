@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from '@metaplex-foundation/beet'
-import * as web3 from '@solana/web3.js'
+import * as beet from "@metaplex-foundation/beet"
+import * as web3 from "@solana/web3.js"
 
 /**
  * @category Instructions
@@ -34,17 +34,17 @@ export const initializeHeroGearsStruct = new beet.FixableBeetArgsStruct<
   }
 >(
   [
-    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['helm', beet.coption(beet.utf8String)],
-    ['neck', beet.coption(beet.utf8String)],
-    ['shoulders', beet.coption(beet.utf8String)],
-    ['ring', beet.coption(beet.utf8String)],
-    ['chest', beet.coption(beet.utf8String)],
-    ['hands', beet.coption(beet.utf8String)],
-    ['weapon', beet.coption(beet.utf8String)],
-    ['legs', beet.coption(beet.utf8String)],
+    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
+    ["helm", beet.coption(beet.utf8String)],
+    ["neck", beet.coption(beet.utf8String)],
+    ["shoulders", beet.coption(beet.utf8String)],
+    ["ring", beet.coption(beet.utf8String)],
+    ["chest", beet.coption(beet.utf8String)],
+    ["hands", beet.coption(beet.utf8String)],
+    ["weapon", beet.coption(beet.utf8String)],
+    ["legs", beet.coption(beet.utf8String)],
   ],
-  'InitializeHeroGearsInstructionArgs'
+  "InitializeHeroGearsInstructionArgs"
 )
 /**
  * Accounts required by the _initializeHeroGears_ instruction
@@ -57,10 +57,10 @@ export const initializeHeroGearsStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type InitializeHeroGearsInstructionAccounts = {
-  heroGears: web3.PublicKey
-  signer: web3.PublicKey
-  nftMint: web3.PublicKey
-  systemProgram?: web3.PublicKey
+  heroGears: web3.address
+  signer: web3.address
+  nftMint: web3.address
+  systemProgram?: web3.address
   anchorRemainingAccounts?: web3.AccountMeta[]
 }
 
@@ -81,7 +81,7 @@ export const initializeHeroGearsInstructionDiscriminator = [
 export function createInitializeHeroGearsInstruction(
   accounts: InitializeHeroGearsInstructionAccounts,
   args: InitializeHeroGearsInstructionArgs,
-  programId = new web3.PublicKey('2XsnJYKTJ45JYDgRzkcEDQBNhjg1FaY8YhQaB9EqbQAb')
+  programId = new web3.address("2XsnJYKTJ45JYDgRzkcEDQBNhjg1FaY8YhQaB9EqbQAb")
 ) {
   const [data] = initializeHeroGearsStruct.serialize({
     instructionDiscriminator: initializeHeroGearsInstructionDiscriminator,

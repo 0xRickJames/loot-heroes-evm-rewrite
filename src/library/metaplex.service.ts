@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from "@solana/web3.js"
+import { Connection, address } from "@solana/web3.js"
 import { asError, Errors, GenericError, NullArgumentError } from "./errors"
 
 // @ts-ignore
@@ -21,7 +21,7 @@ export class MetaplexService {
   ) {}
 
   async getMetaplexMetadata(
-    mint: PublicKey
+    mint: address
   ): Promise<MetaplexMetadataCacheEntry | null> {
     if (!mint) {
       throw NullArgumentError.new("mint")
@@ -68,7 +68,7 @@ export class MetaplexService {
     let tokenMetadata = await Promise.all(
       tokensByowner.map(async (t) => {
         return {
-          publicKey: t.publicKey,
+          address: t.address,
           mint: t.mint,
           metaplexMetadata: await this.getMetaplexMetadata(t.mint),
         } as MetaplexNft
@@ -116,7 +116,7 @@ export class MetaplexService {
   ): Promise<ExternalMetaplexNft> {
     return {
       amount: 1,
-      publicKey: token.publicKey,
+      address: token.address,
       mint: token.mint,
       metaplexMetadata: token.metaplexMetadata,
       externalMetadata: await this.getExternalMetadata(token),

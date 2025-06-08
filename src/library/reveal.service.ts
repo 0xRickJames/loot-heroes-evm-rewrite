@@ -1,4 +1,4 @@
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 
 // @ts-ignore
 import environment from "src/environments/production"
@@ -49,7 +49,7 @@ export class RevealService {
     return `${this.endpoint}/${path}`
   }
 
-  async launchReveal(mint: PublicKey, type: string): Promise<string> {
+  async launchReveal(mint: address, type: string): Promise<string> {
     let revealRoute = this.getRoute(`v1/${type}/reveal`)
 
     let revealParameters = {

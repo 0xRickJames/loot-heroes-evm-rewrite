@@ -11,7 +11,7 @@ import {
   clusterApiUrl,
   Keypair,
   sendAndConfirmTransaction,
-  PublicKey,
+  address,
   Account,
   TransactionInstruction,
 } from "@solana/web3.js"
@@ -38,16 +38,16 @@ import { TransactionResponse } from "@solana/web3.js"
 import { delay } from "src/components/Game/Pvp/HeroCard"
 import { ObjectId } from "mongodb"
 
-const refillEnergy = async (publicKey: string, energyAmount: number) => {
+const refillEnergy = async (address: string, energyAmount: number) => {
   try {
     const { db } = await connectToMongodbPlayers()
     const updateFields: any = {}
-    const player = await db.collection("players").findOne({ player: publicKey })
+    const player = await db.collection("players").findOne({ player: address })
     const currentEnergy: number = player.energy as number
     const newEnergy: number = currentEnergy + energyAmount
     updateFields.energy = newEnergy
     db.collection("players").updateOne(
-      { player: publicKey },
+      { player: address },
       { $set: updateFields }
     )
   } catch (error) {

@@ -35,7 +35,7 @@ export default function DecksRoute(props: any) {
 
   const { connection } = useConnection()
   const wallet = useAnchorWallet()
-  const owner: string = wallet?.publicKey?.toString()
+  const owner: string = wallet?.address?.toString()
   const legendaryLootService = new LegendaryLootService(connection)
 
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -247,7 +247,7 @@ export default function DecksRoute(props: any) {
 
   // Fetch deck names on component mount
   useEffect(() => {
-    if (wallet?.publicKey) {
+    if (wallet?.address) {
       fetchDeckNames()
     }
   }, [wallet])
@@ -315,7 +315,7 @@ export default function DecksRoute(props: any) {
     // and add it to the Player Cards array
     const fetchHeroes = async () => {
       let heroes = await legendaryLootService.getAllLoadouts(
-        wallet.publicKey,
+        wallet.address,
         null
       )
 
@@ -330,7 +330,7 @@ export default function DecksRoute(props: any) {
       setRemainingPlayerCards(playerCards)
     }
 
-    if (wallet?.publicKey) {
+    if (wallet?.address) {
       fetchHeroes()
     }
   }, [wallet])
@@ -382,7 +382,7 @@ export default function DecksRoute(props: any) {
   // Function to save the deck to the database
 
   async function handleOnClickSaveDeck() {
-    if (wallet?.publicKey === null || wallet?.publicKey === undefined) {
+    if (wallet?.address === null || wallet?.address === undefined) {
       alert("Please connect your wallet to save a deck!")
       return
     } else if (newDeck.length < 7) {

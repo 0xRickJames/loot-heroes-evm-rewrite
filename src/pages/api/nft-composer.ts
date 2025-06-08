@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { createNFT } from "@lootheroes/nft-composer"
-import { Connection, PublicKey } from "@solana/web3.js"
+import { Connection, address } from "@solana/web3.js"
 import { JsonMetadata, Metaplex, Nft, Sft } from "@metaplex-foundation/js"
 import production from "src/environments/production"
 import { LootHeroesNft } from "./gears"
@@ -25,7 +25,7 @@ export default async function handler(
     const metaplex = new Metaplex(connection)
 
     const nft: LootHeroesNft = await metaplex.nfts().findByMint({
-      mintAddress: new PublicKey(mint),
+      mintAddress: new address(mint),
     })
 
     const classID = nft.json.internalAttributes?.find(

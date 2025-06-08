@@ -1,9 +1,10 @@
 import React, { useCallback } from "react"
 import NavButton from "../Widget/NavButton"
-import { useWallet } from "@solana/wallet-adapter-react"
 import ProfileModal from "./ProfileModal"
 import axios from "axios"
 import { useRouter } from "next/router"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
 type Props = {
   children: React.ReactNode
@@ -16,16 +17,18 @@ export function GameLayout({
   backgroundImage,
   connectedPlayersLength,
 }: Props) {
-  const { publicKey } = useWallet()
+  const { address, connect, disconnect, signer, provider } =
+    useContext(EvmWalletContext)
+
   const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false)
 
   const [playerData, setPlayerData] = React.useState(null)
 
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         setPlayerData(data)
@@ -33,7 +36,7 @@ export function GameLayout({
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
 
   React.useEffect(() => {
     fetchPlayerData()
@@ -48,20 +51,20 @@ export function GameLayout({
     setModalOpen(true)
   }
   const handleCloseModal = async (profileUrl, username) => {
-    await updatePlayerProfile(publicKey.toString(), profileUrl, username)
+    await updatePlayerProfile(address.toString(), profileUrl, username)
     fetchPlayerData()
     setModalOpen(false)
     // Call the saved onClose function
     modalOnClose()
   }
   const updatePlayerProfile = async (
-    publicKey: string,
+    address: string,
     profileUrl: string,
     username: string
   ) => {
     try {
       const response = await axios.put(
-        `/api/profiles?publicKey=${publicKey}&playerName=${username}&playerPfp=${profileUrl}`
+        `/api/profiles?address=${address}&playerName=${username}&playerPfp=${profileUrl}`
       )
     } catch (error) {
       console.error(error) // Handle any errors that occur during the API call
@@ -146,12 +149,12 @@ export function GameLayout({
                   : null}
               </p>
               {/*
-              {publicKey ? (
+              {address ? (
                 <>
                   {" "}
                   <p className="text-lg">
-                    {publicKey
-                      ? publicKey.toString().slice(0, 12) + "..."
+                    {address
+                      ? address.toString().slice(0, 12) + "..."
                       : null}
                   </p>
                    <p className="">

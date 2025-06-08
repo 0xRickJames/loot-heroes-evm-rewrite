@@ -2,7 +2,7 @@ import React from "react"
 import Hero from "../components/Landing/Hero"
 import Team from "../components/Landing/Team"
 import { Container } from "../components/Container"
-import CarouselLanding from "../components/Landing/Carousel"
+//import CarouselLanding from "../components/Landing/Carousel"
 import Recruiting from "../components/Landing/Recruiting"
 import Expeditions from "../components/Landing/Expeditions"
 import Airdrops from "../components/Landing/Airdrops"
@@ -29,7 +29,7 @@ export default function Landing() {
           {/* <MintHero /> */}
           {/* <MintHero2 /> */}
 
-          <CarouselLanding />
+          {/* <CarouselLanding /> */}
           {/*<Recruiting />
           <Expeditions />
           <Airdrops />*/}

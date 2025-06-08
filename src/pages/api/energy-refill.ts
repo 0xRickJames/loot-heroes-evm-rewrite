@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { connectToMongodbPlayers } from "../../utils/connectToMongodb"
 import { MongoClient, ObjectId, WithId } from "mongodb"
-import { publicKey } from "@project-serum/anchor/dist/cjs/utils"
+import { address } from "@project-serum/anchor/dist/cjs/utils"
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,7 +12,7 @@ export default async function handler(
 
   switch (method) {
     case "PUT":
-      const { publicKey: publicKey, energyAmount: energyAmount } = req.query
+      const { address: address, energyAmount: energyAmount } = req.query
 
       // Check if either playerName or playerPfp is provided
       if (energyAmount) {
@@ -22,7 +22,7 @@ export default async function handler(
           // get player's current energy
           const player = await db
             .collection("players")
-            .findOne({ player: publicKey })
+            .findOne({ player: address })
           const energyAmountInt = parseInt(energyAmount as string)
           const currentEnergy: number = player.energy as number
           const newEnergy: number = currentEnergy + energyAmountInt
@@ -31,7 +31,7 @@ export default async function handler(
 
         const updateResult = await db
           .collection("players")
-          .updateOne({ player: publicKey }, { $set: updateFields })
+          .updateOne({ player: address }, { $set: updateFields })
         if (updateResult.modifiedCount > 0) {
           res
             .status(200)

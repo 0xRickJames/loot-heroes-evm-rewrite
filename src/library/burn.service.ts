@@ -1,11 +1,11 @@
 // @ts-ignore
 import environment from "src/environments/production"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import { RevealNft } from "./reveal.service"
 
 interface BurnGearDto {
   signedMessage: string
-  publicKey: string
+  address: string
   payload: string
 }
 
@@ -52,8 +52,8 @@ export class BurnService {
   async registerBurn(
     intentId: string,
     txid: string,
-    heroMint: PublicKey,
-    wallet: PublicKey,
+    heroMint: address,
+    wallet: address,
     status: boolean,
     items: [string, string][]
   ) {
@@ -74,7 +74,7 @@ export class BurnService {
     }).then((r) => r.json())) as QueuedResponse
   }
 
-  async pendingBurns(wallet: PublicKey, heroMint: PublicKey) {
+  async pendingBurns(wallet: address, heroMint: address) {
     return (await fetch(
       this.getRoute(
         `v1/gear/burn/pending/${wallet.toString()}/${heroMint.toString()}`
@@ -91,9 +91,9 @@ export class BurnService {
 
   async burnGear(
     txids: string[],
-    heroMint: PublicKey,
+    heroMint: address,
     signMessageFunction: (payload: Uint8Array) => Promise<Uint8Array>,
-    wallet: PublicKey
+    wallet: address
   ): Promise<QueuedResponse> {
     let message = {
       txids: txids,
@@ -107,13 +107,13 @@ export class BurnService {
     let signedGearBurn = await signMessageFunction(messageUint)
 
     let encodedMessage = Buffer.from(signedGearBurn).toString("base64")
-    let encodedPublicKey = Buffer.from(wallet.toBytes()).toString("base64")
+    let encodedaddress = Buffer.from(wallet.toBytes()).toString("base64")
 
     let burnRoute = this.getRoute(`v1/gear/burn`)
 
     let burnParameters = {
       signedMessage: encodedMessage,
-      publicKey: encodedPublicKey,
+      address: encodedaddress,
       payload: jsonPayload,
     } as BurnGearDto
 

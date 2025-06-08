@@ -46,7 +46,7 @@ export function WalletNFTsProvider(props: Props) {
 
     const allWalletNfts = (await metaplex
       .nfts()
-      .findAllByOwner({ owner: wallet.publicKey })) as Metadata[]
+      .findAllByOwner({ owner: wallet.address })) as Metadata[]
     setNfts(allWalletNfts)
     /** Filter by creator */
     const allLootHeroesNfts = allWalletNfts.filter((NFT) => {
@@ -90,7 +90,7 @@ export function WalletNFTsProvider(props: Props) {
     setAllGearNfts(fullGear)
   }, [wallet, connection])
   useEffect(() => {
-    if (wallet.publicKey && connection) {
+    if (wallet.address && connection) {
       fetchNfts()
     }
   }, [wallet, connection, fetchNfts])

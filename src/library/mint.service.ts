@@ -1,4 +1,4 @@
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 
 // @ts-ignore
 import environment from "src/environments/production"
@@ -31,7 +31,7 @@ export class MintService {
     return `${this.endpoint}/${path}`
   }
 
-  async fetchMints(owner: PublicKey): Promise<ProgressQueuedResponse> {
+  async fetchMints(owner: address): Promise<ProgressQueuedResponse> {
     let revealRoute = this.getRoute(`v1/mint/fetch`)
 
     let revealParameters = {
@@ -48,7 +48,7 @@ export class MintService {
     }).then((r) => r.json())) as ProgressQueuedResponse
   }
 
-  async findAllMints(owner: PublicKey): Promise<MetaplexMetadataCacheEntry[]> {
+  async findAllMints(owner: address): Promise<MetaplexMetadataCacheEntry[]> {
     let revealRoute = this.getRoute(`v1/mint/all?owner=${owner}`)
 
     return (await fetch(revealRoute, {
@@ -60,7 +60,7 @@ export class MintService {
     }).then((r) => r.json())) as MetaplexMetadataCacheEntry[]
   }
 
-  async findAllMintsCount(owner: PublicKey, symbol: string): Promise<number> {
+  async findAllMintsCount(owner: address, symbol: string): Promise<number> {
     let revealRoute = this.getRoute(
       `v1/mint/all/count?owner=${owner}&symbol=${symbol}`
     )

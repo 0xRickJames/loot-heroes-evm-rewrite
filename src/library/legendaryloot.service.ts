@@ -1,5 +1,5 @@
 import { Connection } from "@metaplex/js"
-import { PublicKey } from "@solana/web3.js"
+import { address } from "@solana/web3.js"
 import gearSets from "src/assets/sets.json"
 
 // @ts-ignore
@@ -146,12 +146,12 @@ export class LegendaryLootService {
   }
 
   getAllLoadouts = async (
-    publicKey: PublicKey,
+    address: address,
     filterByMint: string | null = null
   ): Promise<LegendaryLootHero[]> => {
     let queryOptions = {
       symbol: symbolLoadout,
-      owner: publicKey,
+      owner: address,
       mints: HeroesMints,
       decimalsAmount: 0,
       tokensAmount: 1,
@@ -176,12 +176,12 @@ export class LegendaryLootService {
   }
 
   async getAllItems(
-    publicKey: PublicKey,
+    address: address,
     filterByMint: string | null = null
   ): Promise<LegendaryLootItem[]> {
     let queryOptions = {
       symbol: symbolItem,
-      owner: publicKey,
+      owner: address,
       decimalsAmount: 0,
       tokensAmount: 1,
     } as TokenQueryOptions
@@ -207,9 +207,9 @@ export class LegendaryLootService {
     return Promise.all(fetches)
   }
 
-  async getChestCoins(publicKey: PublicKey): Promise<ChestCoin[]> {
+  async getChestCoins(address: address): Promise<ChestCoin[]> {
     let tokens = await this.solanaService.getTokensByOwner({
-      owner: publicKey,
+      owner: address,
       decimalsAmount: 0,
       tokensAmount: -1,
     })
@@ -241,20 +241,20 @@ export class LegendaryLootService {
   }
 
   async getLoadout(
-    publicKey: PublicKey,
+    address: address,
     nftId: string,
     mint: string
   ): Promise<LegendaryLootHero | undefined> {
-    let heroes = await this.getAllLoadouts(publicKey, mint)
+    let heroes = await this.getAllLoadouts(address, mint)
 
     return heroes.find((h) => h.getNftId() === nftId)
   }
 
   async getItem(
-    publicKey: PublicKey,
+    address: address,
     nftId: string
   ): Promise<LegendaryLootItem | undefined> {
-    let items = await this.getAllItems(publicKey, nftId)
+    let items = await this.getAllItems(address, nftId)
 
     return items.find((h) => h.getNftId() === nftId)
   }

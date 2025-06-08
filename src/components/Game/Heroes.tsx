@@ -28,7 +28,7 @@ const Heroes = () => {
     if (nftBridge) {
       setIsLoading(true)
 
-      let fetchedHeroes = await nftBridge.getAllLoadouts(wallet.publicKey)
+      let fetchedHeroes = await nftBridge.getAllLoadouts(wallet.address)
 
       setHeroes(fetchedHeroes)
       setIsLoading(false)

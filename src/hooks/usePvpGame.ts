@@ -2,10 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import io, { Socket } from "socket.io-client"
 import customParser from "socket.io-msgpack-parser"
 import { Card } from "src/utils/interfaces"
-import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import axios from "axios"
-import { Metaplex, keypairIdentity } from "@metaplex-foundation/js"
-import { Connection, Keypair, PublicKey } from "@solana/web3.js"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
 // Sounds
 
@@ -51,8 +50,8 @@ export type Match = {
     [socketId: string]: MatchPlayer
   }
   board: (BoardCard | null)[][]
-  playerOnePublicKey: string
-  playerTwoPublicKey: string
+  playerOneaddress: string
+  playerTwoaddress: string
   matchId: string
   turnNumber: number
   isRedFirst: boolean
@@ -76,8 +75,8 @@ export default function usePvpGame() {
   const [isFinding, setIsFinding] = useState(false)
   const [currentMatch, setCurrentMatch] = useState<Match>(null)
 
-  const wallet = useAnchorWallet()
-  const publicKey: string = wallet?.publicKey?.toString()
+  const wallet = useContext(EvmWalletContext)
+  const address: string = wallet?.address?.toString()
   const [playerData, setPlayerData] = useState({
     playerName: "",
     playerPfp: "",
@@ -102,13 +101,10 @@ export default function usePvpGame() {
   const [isMatchFoundModalOpen, setIsMatchFoundModalOpen] = useState(false)
   const [isMatchOverModalOpen, setIsMatchOverModalOpen] = useState(false)
 
-  const updateLastUsedDeck = async (
-    publicKey: string,
-    lastUsedDeck: string
-  ) => {
+  const updateLastUsedDeck = async (address: string, lastUsedDeck: string) => {
     try {
       const response = await axios.put(
-        `/api/last-used-deck?publicKey=${publicKey}&lastUsedDeck=${lastUsedDeck}`
+        `/api/last-used-deck?address=${address}&lastUsedDeck=${lastUsedDeck}`
       )
     } catch (error) {
       console.error(error) // Handle any errors that occur during the API call
@@ -119,23 +115,23 @@ export default function usePvpGame() {
     target: { value: React.SetStateAction<string> }
   }) => {
     setDeckName(event.target.value)
-    if (publicKey) {
-      updateLastUsedDeck(publicKey, event.target.value.toString())
+    if (address) {
+      updateLastUsedDeck(address, event.target.value.toString())
     }
   }
 
   const fetchDeckNames = async () => {
-    await axios.get(`/api/decks?owner=${publicKey}`).then((response) => {
+    await axios.get(`/api/decks?owner=${address}`).then((response) => {
       const allDecks = response.data.map((deck: { name: any }) => deck.name)
       setDeckNames([...allDecks, "Default Deck"])
     })
   }
 
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         setPlayerData(data)
@@ -146,13 +142,13 @@ export default function usePvpGame() {
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
 
   useEffect(() => {
-    if (publicKey) {
+    if (address) {
       fetchDeckNames()
     }
-  }, [publicKey])
+  }, [address])
 
   useEffect(() => {
     fetchPlayerData()

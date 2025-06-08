@@ -32,7 +32,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token"
 import {
-  PublicKey,
+  address,
   SystemProgram,
   SYSVAR_INSTRUCTIONS_PUBKEY,
 } from "@solana/web3.js"
@@ -43,7 +43,7 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata"
 
 import { toBigNumber } from "@metaplex-foundation/js"
-import { publicKey } from "@project-serum/anchor/dist/cjs/utils"
+import { address } from "@project-serum/anchor/dist/cjs/utils"
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata"
 import { createBurnInstruction as oldCreateBurnInstruction } from "@solana/spl-token"
 
@@ -83,7 +83,7 @@ export default async function handler(
     const merchantKeypair = Keypair.fromSecretKey(
       bs58.decode(merchantPrivateKey)
     )
-    const merchantPublicKey = new PublicKey(
+    const merchantaddress = new address(
       "AaMBmepCxwpGsfTJtiXi1wE9xj5pNMaDizXVsyG91mK9"
     )
     const kp = web3.Keypair.fromSecretKey(
@@ -100,7 +100,7 @@ export default async function handler(
       .use(bundlrStorage())
 
     const nft: LootHeroesNft = await metaplex.nfts().findByMint({
-      mintAddress: new web3.PublicKey(mint),
+      mintAddress: new web3.address(mint),
     })
     const computePriceIx = ComputeBudgetProgram.setComputeUnitPrice({
       microLamports: 1,
@@ -111,8 +111,8 @@ export default async function handler(
     })
     const tx = new Transaction()
 
-    const ownerPublicKey = new web3.PublicKey(owner)
-    tx.feePayer = ownerPublicKey
+    const owneraddress = new web3.address(owner)
+    tx.feePayer = owneraddress
     tx.add(computePriceIx, computeLimitIx)
 
     // --- 1. Start the instructions to burn the Gear NFTs ---
@@ -124,11 +124,8 @@ export default async function handler(
 
     for (const item of selected) {
       // burn gear
-      const gearMint = new web3.PublicKey(item.externalMetaplexNft.mint)
-      const senderATA = await getAssociatedTokenAddress(
-        gearMint,
-        ownerPublicKey
-      )
+      const gearMint = new web3.address(item.externalMetaplexNft.mint)
+      const senderATA = await getAssociatedTokenAddress(gearMint, owneraddress)
 
       const token = await metaplex.nfts().findByMint({ mintAddress: gearMint })
       const oldGearCreator = "79XjRxfmHsugKCNJRFXtQoZ8JEnLywstSadezho77QaE"
@@ -142,15 +139,15 @@ export default async function handler(
 
         const burnIx = oldCreateBurnInstruction(
           senderATA,
-          new web3.PublicKey(item.externalMetaplexNft.mint),
-          ownerPublicKey,
+          new web3.address(item.externalMetaplexNft.mint),
+          owneraddress,
           1
         )
 
         const closeIx = createCloseAccountInstruction(
           senderATA,
-          ownerPublicKey,
-          ownerPublicKey
+          owneraddress,
+          owneraddress
         )
 
         tx.add(burnIx, closeIx)
@@ -163,22 +160,21 @@ export default async function handler(
         console.log("new")
         const collectionAddress = token.collection?.address
         let collectionMetadata: string | undefined = undefined
-        const [collectionMetadataPDA, _bump3] =
-          PublicKey.findProgramAddressSync(
-            [
-              Buffer.from("metadata"),
-              PROGRAM_ID.toBuffer(),
-              Buffer.from(collectionAddress.toBytes()),
-            ],
-            PROGRAM_ID
-          )
+        const [collectionMetadataPDA, _bump3] = address.findProgramAddressSync(
+          [
+            Buffer.from("metadata"),
+            PROGRAM_ID.toBuffer(),
+            Buffer.from(collectionAddress.toBytes()),
+          ],
+          PROGRAM_ID
+        )
         collectionMetadata = collectionMetadataPDA.toBase58()
 
-        const [metadata] = PublicKey.findProgramAddressSync(
+        const [metadata] = address.findProgramAddressSync(
           [Buffer.from("metadata"), PROGRAM_ID.toBuffer(), gearMint.toBuffer()],
           PROGRAM_ID
         )
-        const [masterEdition] = PublicKey.findProgramAddressSync(
+        const [masterEdition] = address.findProgramAddressSync(
           [
             Buffer.from("metadata"),
             PROGRAM_ID.toBuffer(),
@@ -187,7 +183,7 @@ export default async function handler(
           ],
           PROGRAM_ID
         )
-        const [tokenRecord] = PublicKey.findProgramAddressSync(
+        const [tokenRecord] = address.findProgramAddressSync(
           [
             Buffer.from("metadata"),
             PROGRAM_ID.toBuffer(),
@@ -200,9 +196,9 @@ export default async function handler(
 
         const burn = createBurnInstruction(
           {
-            authority: ownerPublicKey,
+            authority: owneraddress,
             metadata: metadata,
-            collectionMetadata: new PublicKey(collectionMetadata),
+            collectionMetadata: new address(collectionMetadata),
             edition: masterEdition,
             mint: gearMint,
             token: senderATA,
@@ -222,7 +218,7 @@ export default async function handler(
       }
 
       //tx.add(
-      //createCloseAccountInstruction(senderATA, ownerPublicKey, ownerPublicKey)
+      //createCloseAccountInstruction(senderATA, owneraddress, owneraddress)
       //)
 
       // save array of items to add

@@ -19,40 +19,37 @@ const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map()
  */
 export class UnauthorizedError extends Error {
   readonly code: number = 0x1770
-  readonly name: string = 'Unauthorized'
+  readonly name: string = "Unauthorized"
   constructor() {
-    super('Unauthorized')
-    if (typeof Error.captureStackTrace === 'function') {
+    super("Unauthorized")
+    if (typeof Error.captureStackTrace === "function") {
       Error.captureStackTrace(this, UnauthorizedError)
     }
   }
 }
 
 createErrorFromCodeLookup.set(0x1770, () => new UnauthorizedError())
-createErrorFromNameLookup.set('Unauthorized', () => new UnauthorizedError())
+createErrorFromNameLookup.set("Unauthorized", () => new UnauthorizedError())
 
 /**
- * InvalidPublicKey: 'Invalid public key'
+ * Invalidaddress: 'Invalid public key'
  *
  * @category Errors
  * @category generated
  */
-export class InvalidPublicKeyError extends Error {
+export class InvalidaddressError extends Error {
   readonly code: number = 0x1771
-  readonly name: string = 'InvalidPublicKey'
+  readonly name: string = "Invalidaddress"
   constructor() {
-    super('Invalid public key')
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, InvalidPublicKeyError)
+    super("Invalid public key")
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, InvalidaddressError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1771, () => new InvalidPublicKeyError())
-createErrorFromNameLookup.set(
-  'InvalidPublicKey',
-  () => new InvalidPublicKeyError()
-)
+createErrorFromCodeLookup.set(0x1771, () => new InvalidaddressError())
+createErrorFromNameLookup.set("Invalidaddress", () => new InvalidaddressError())
 
 /**
  * Attempts to resolve a custom program error from the provided error code.

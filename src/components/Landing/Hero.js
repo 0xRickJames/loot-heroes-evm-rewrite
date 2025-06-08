@@ -1,7 +1,6 @@
 import { useState } from "react"
 import Navbar from "../Navbar"
 
-import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import { ArrowRightIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,9 +11,12 @@ import {
 } from "@fortawesome/free-brands-svg-icons"
 import NavButton from "../Widget/NavButton"
 import ModalGeneric from "../Widget/Modal"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
+
 
 const Hero = () => {
-  const wallet = useAnchorWallet()
+  const wallet = useContext(EvmWalletContext)
   const [showModal, setShowModal] = useState(false)
   return (
     <>

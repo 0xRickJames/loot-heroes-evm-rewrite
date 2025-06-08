@@ -41,10 +41,10 @@ export default {
     tokenMint: "CONFIGME",
     tokenDecimals: 9,
     farm: {
-      publicKey: "CONFIGME",
+      address: "CONFIGME",
     },
     bank: {
-      publicKey: "CONFIGME",
+      address: "CONFIGME",
     },
   },
 }

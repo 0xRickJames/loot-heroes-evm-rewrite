@@ -28,7 +28,7 @@ import {
 import { RevealService } from "src/library/reveal.service"
 import { BurnGearTransaction, BurnService } from "src/library/burn.service"
 import {
-  PublicKey,
+  address,
   sendAndConfirmTransaction,
   Transaction,
 } from "@solana/web3.js"
@@ -172,14 +172,14 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
           burnTxIds,
           hero.getTokenMint(),
           solanaWallet.signMessage,
-          solanaWallet.publicKey as PublicKey
+          solanaWallet.address as address
         )
 
         if (!result.id) {
           throw GenericError.new(Errors.WalletOperationGenericError)
             .withParameter("txid", hero.getNftId())
             .withParameter("result", result)
-            .withOwnerWallet(wallet.publicKey)
+            .withOwnerWallet(wallet.address)
             .build()
         }
 
@@ -219,7 +219,7 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
             await fetch("/api/gears", {
               method: "POST",
               body: JSON.stringify({
-                owner: wallet.publicKey.toString(),
+                owner: wallet.address.toString(),
                 mint: loadout.getTokenMint().toString(),
                 selected,
               }),
@@ -232,7 +232,7 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
           console.log(gearEquipRawTx.data)
 
           const tx = Transaction.from(gearEquipRawTx.data)
-          tx.feePayer = wallet.publicKey
+          tx.feePayer = wallet.address
           const signed = await solanaWallet.signTransaction(tx)
 
           const txId = await connection.sendRawTransaction(signed.serialize())
@@ -293,12 +293,12 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
   )
 
   useAsyncEffect(async () => {
-    if (wallet?.publicKey) {
+    if (wallet?.address) {
       if (loadout !== undefined || isLoading) return
       setIsLoading(true)
 
       const loadoutFrom = await nftBridge.getLoadout(
-        wallet.publicKey,
+        wallet.address,
         query.nftId as string,
         query.mint as string
       )
@@ -307,7 +307,7 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
 
       // if (loadoutFrom) {
       //   const pendingBurns = await burnService.pendingBurns(
-      //     wallet.publicKey,
+      //     wallet.address,
       //     loadoutFrom.getTokenMint()
       //   )
       //   setPendingBurns(pendingBurns)
@@ -396,7 +396,7 @@ export const Hero: React.FC<WalletAware> = (props: WalletAware) => {
           </NavButton>
         </div>
         <div className="w-full">
-          {!wallet?.publicKey ? (
+          {!wallet?.address ? (
             "Please, connect your wallet first."
           ) : (
             <>

@@ -7,7 +7,7 @@ import {
   LAMPORTS_PER_SOL,
   clusterApiUrl,
   Keypair,
-  PublicKey,
+  address,
 } from "@solana/web3.js"
 import {
   TOKEN_PROGRAM_ID,
@@ -34,7 +34,7 @@ import {
   mplCandyMachine,
 } from "@metaplex-foundation/mpl-candy-machine"
 import {
-  publicKey as umiPublicKey,
+  address as umiaddress,
   some,
   unwrapOption,
 } from "@metaplex-foundation/umi"
@@ -64,7 +64,7 @@ function truncateString(input: string): string {
 
 export default function Home() {
   const [connection, setConnection] = useState(null)
-  const { publicKey, sendTransaction, connected, signTransaction } = useWallet()
+  const { address, sendTransaction, connected, signTransaction } = useWallet()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [energy, setEnergy] = useState(0)
@@ -100,7 +100,7 @@ export default function Home() {
     },
   }
 
-  const merchantPublicKey = new PublicKey(
+  const merchantaddress = new address(
     "AaMBmepCxwpGsfTJtiXi1wE9xj5pNMaDizXVsyG91mK9"
   )
   const gwenAddress = process.env.NEXT_PUBLIC_GWEN_ADDRESS
@@ -117,8 +117,8 @@ export default function Home() {
   // logic for minting tournament tickets
   const fetchCandyMachineData = useCallback(async () => {
     if (!candyMachineId) throw new Error("candyMachineId not found")
-    const candyMachinePublicKey = umiPublicKey(candyMachineId)
-    const candyMachine = await fetchCandyMachine(umi, candyMachinePublicKey)
+    const candyMachineaddress = umiaddress(candyMachineId)
+    const candyMachine = await fetchCandyMachine(umi, candyMachineaddress)
     const candyGuard = await fetchCandyGuard(umi, candyMachine.mintAuthority)
 
     setCandyMachine(candyMachine)
@@ -181,12 +181,12 @@ export default function Home() {
         .add(setComputeUnitLimit(umiWalletAdapter, { units: 800_000 }))
         .add(
           mintV2(umiWalletAdapter, {
-            candyMachine: candyMachine.publicKey,
+            candyMachine: candyMachine.address,
             nftMint,
             collectionMint: candyMachine.collectionMint,
             collectionUpdateAuthority: candyMachine.authority,
             tokenStandard: candyMachine.tokenStandard,
-            candyGuard: candyGuard?.publicKey,
+            candyGuard: candyGuard?.address,
             mintArgs,
           })
         )
@@ -270,10 +270,10 @@ export default function Home() {
   }
 
   const fetchPlayerData = useCallback(async () => {
-    if (publicKey) {
+    if (address) {
       try {
         const response = await fetch(
-          `/api/profiles?publicKey=${publicKey.toString()}`
+          `/api/profiles?address=${address.toString()}`
         )
         const data = await response.json()
         console.log("Data: ", data)
@@ -284,18 +284,18 @@ export default function Home() {
         console.error("Error fetching player data:", error)
       }
     }
-  }, [publicKey])
+  }, [address])
   useEffect(() => {
     fetchPlayerData()
   }, [fetchPlayerData])
 
-  async function getSolBalance(publicKey: PublicKey) {
-    const balance = await connection.getBalance(publicKey)
+  async function getSolBalance(address: address) {
+    const balance = await connection.getBalance(address)
     setSol(balance / LAMPORTS_PER_SOL)
     return balance / LAMPORTS_PER_SOL
   }
 
-  async function getSPLTokenBalance(ownerAddress: PublicKey): Promise<number> {
+  async function getSPLTokenBalance(ownerAddress: address): Promise<number> {
     const connection = new Connection(
       "https://lively-ultra-lambo.solana-mainnet.quiknode.pro/72c8ec506f45d1f495fcfe29fe00c039a322a863/"
     )
@@ -305,7 +305,7 @@ export default function Home() {
         programId: TOKEN_PROGRAM_ID,
       }
     )
-    const tokenMintAddress = new PublicKey(gwenAddress)
+    const tokenMintAddress = new address(gwenAddress)
     let balance = 0
     for (const tokenAccount of tokenAccounts.value) {
       const accountInfo = await connection.getAccountInfo(tokenAccount.pubkey)
@@ -321,10 +321,10 @@ export default function Home() {
     return balance
   }
 
-  const refillEnergy = async (publicKey: string, energyAmount: number) => {
+  const refillEnergy = async (address: string, energyAmount: number) => {
     try {
       const response = await axios.put(
-        `/api/energy-refill?publicKey=${publicKey}&energyAmount=${energyAmount}`
+        `/api/energy-refill?address=${address}&energyAmount=${energyAmount}`
       )
     } catch (error) {
       console.error(error) // Handle any errors that occur during the API call
@@ -337,17 +337,17 @@ export default function Home() {
         "https://lively-ultra-lambo.solana-mainnet.quiknode.pro/72c8ec506f45d1f495fcfe29fe00c039a322a863/"
       )
     )
-    if (publicKey) {
-      //getSolBalance(publicKey).then((balance) =>
+    if (address) {
+      //getSolBalance(address).then((balance) =>
       //  console.log("User's SOL balance: ", balance)
       //)
-      getSPLTokenBalance(publicKey)
+      getSPLTokenBalance(address)
         .then((balance) => console.log("User's GWEN balance: ", balance))
         .catch((error) =>
           console.error("Error retrieving GWEN balance: ", error)
         )
     }
-  }, [publicKey])
+  }, [address])
 
   const handleSolTransaction = async (
     solAmount: number,
@@ -360,20 +360,20 @@ export default function Home() {
 
     try {
       console.log("Starting transaction with amount TO merchant: ", solAmount)
-      if (!publicKey || !connection) {
+      if (!address || !connection) {
         console.log("No public key or connection available")
         setIsLoading(false)
         return
       }
 
-      const mintPublicKey = new PublicKey(gwenAddress)
+      const mintaddress = new address(gwenAddress)
 
       const gwenRawTx: { data: Buffer } = await (
         await fetch("/api/createBuyGwenTransaction", {
           method: "POST",
           body: JSON.stringify({
             solAmount,
-            publicKey: publicKey.toString(),
+            address: address.toString(),
           }),
           headers: {
             "Content-Type": "application/json",
@@ -384,7 +384,7 @@ export default function Home() {
       // Parse the response
       const tx = Transaction.from(gwenRawTx.data)
       console.log("add feepayer")
-      tx.feePayer = publicKey
+      tx.feePayer = address
       console.log("Sign tx")
       const signed = await signTransaction(tx)
       console.log("send tx")
@@ -395,10 +395,10 @@ export default function Home() {
       console.log(txId)
 
       await connection.confirmTransaction(txId, "confirmed")
-      getSolBalance(publicKey).then((balance) =>
+      getSolBalance(address).then((balance) =>
         console.log("User's SOL balance: ", balance)
       )
-      getSPLTokenBalance(publicKey)
+      getSPLTokenBalance(address)
         .then((balance) => console.log("User's GWEN balance: ", balance))
         .catch((error) =>
           console.error("Error retrieving GWEN balance: ", error)
@@ -415,9 +415,7 @@ export default function Home() {
   }
 
   async function getNumberDecimals(mintAddress: string): Promise<number> {
-    const info = await connection.getParsedAccountInfo(
-      new PublicKey(gwenAddress)
-    )
+    const info = await connection.getParsedAccountInfo(new address(gwenAddress))
     const result = (info.value?.data).parsed.info.decimals as number
     return result
   }
@@ -431,23 +429,23 @@ export default function Home() {
     setPurchasedItemName(`${energyAmount} Energy`)
     setPurchasedItemCost(`${gwenAmount} GWEN`)
     console.log(
-      `Sending ${gwenAmount} ${gwenAddress} from ${publicKey.toString()} to ${merchantPublicKey}.`
+      `Sending ${gwenAmount} ${gwenAddress} from ${address.toString()} to ${merchantaddress}.`
     )
     try {
       console.log("Starting transaction with amount TO merchant: ", gwenAmount)
-      if (!publicKey || !connection) {
+      if (!address || !connection) {
         console.log("No public key or connection available")
         setIsLoading(false)
         return
       }
 
       let userGwenAccount = await getAssociatedTokenAddress(
-        new PublicKey(gwenAddress),
-        new PublicKey(publicKey)
+        new address(gwenAddress),
+        new address(address)
       )
       let merchantGwenAccount = await getAssociatedTokenAddress(
-        new PublicKey(gwenAddress),
-        new PublicKey(merchantPublicKey)
+        new address(gwenAddress),
+        new address(merchantaddress)
       )
       // Create a new transaction
       const transaction = new Transaction()
@@ -458,13 +456,13 @@ export default function Home() {
       ).blockhash
 
       // Set the fee payer
-      transaction.feePayer = new PublicKey(publicKey)
+      transaction.feePayer = new address(address)
 
       transaction.add(
         createTransferInstruction(
           userGwenAccount,
           merchantGwenAccount,
-          new PublicKey(publicKey),
+          new address(address),
           gwenAmount * Math.pow(10, 2)
         )
       )
@@ -488,10 +486,10 @@ export default function Home() {
       })
 
       fetchPlayerData()
-      getSolBalance(publicKey).then((balance) =>
+      getSolBalance(address).then((balance) =>
         console.log("User's SOL balance: ", balance)
       )
-      getSPLTokenBalance(publicKey)
+      getSPLTokenBalance(address)
         .then((balance) => console.log("User's GWEN balance: ", balance))
         .catch((error) =>
           console.error("Error retrieving GWEN balance: ", error)
@@ -548,7 +546,7 @@ export default function Home() {
                 flex: 1,
               }}
             >
-              {!publicKey ? "Connect" : truncateString(publicKey.toString())}
+              {!address ? "Connect" : truncateString(address.toString())}
             </WalletMultiButton>
           </div>
           <div className="flex flex-col justify-center bg-plank-12-bg bg-contain shadow-black h-20 bg-no-repeat bg-center text-5xl font-bold mb-8 text-center">
@@ -607,7 +605,7 @@ export default function Home() {
                     sounds.highlightButton()
                   }}
                   className="bg-plank-07 bg-contain bg-no-repeat bg-center w-60 h-16 self-center text-center opacity-50"
-                  disabled={!publicKey || isLoading}
+                  disabled={!address || isLoading}
                   onClick={() => {
                     sounds.buttonClick()
                     mint()

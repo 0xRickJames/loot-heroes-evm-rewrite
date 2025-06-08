@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { WalletProvider } from "@solana/wallet-adapter-react"
 
 import { MenuIcon } from "@heroicons/react/solid"
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
-import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import Link from "next/link"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
+
 
 function useOutsideAlerter(ref, setOpenNav) {
   useEffect(() => {
@@ -29,8 +29,9 @@ const Navbar = ({ logo, className, children }) => {
   const wrapperRef = useRef(null)
   useOutsideAlerter(wrapperRef, setOpenNav)
 
-  const wallet = useAnchorWallet()
-  const base58 = useMemo(() => wallet?.publicKey?.toBase58(), [wallet])
+  const wallet = useContext(EvmWalletContext)
+
+  const base58 = useMemo(() => wallet?.address?.toBase58(), [wallet])
 
   let renderButtons = function () {
     return (
@@ -42,11 +43,15 @@ const Navbar = ({ logo, className, children }) => {
             {children}
           </div>
           <div className="flex flex-row gap-2">
-            <WalletMultiButton>
-              {!wallet
-                ? "Connect"
-                : base58.slice(0, 4) + ".." + base58.slice(-4)}
-            </WalletMultiButton>
+          {!wallet.address ? (
+  <button onClick={wallet.connect}>Connect Wallet</button>
+) : (
+  <div>
+    <p>{wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}</p>
+    <button onClick={disconnect}>Disconnect</button>
+  </div>
+)}
+
           </div>
         </div>
       </>
