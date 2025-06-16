@@ -1,14 +1,11 @@
 import Header from "src/components/Game/Header"
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Container } from "src/components/Container"
-import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react"
 import { defaultDeck } from "src/utils/defaultDeck"
-import { LegendaryLootService } from "src/library/legendaryloot.service"
 import HeroCard from "src/components/Game/Pvp/HeroCard"
 import InteractiveButton from "src/components/Widget/InteractiveButton"
 import axios from "axios"
 import { Card, Deck } from "src/utils/interfaces"
-import { LegendaryLootItemSlot } from "src/library/legendaryloot.interface"
 import BlankCard from "src/components/Game/Pvp/BlankCard"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -16,10 +13,11 @@ import NavButton from "src/components/Widget/NavButton"
 import { ArrowLeftIcon } from "@heroicons/react/solid"
 import { useMediaQuery } from "@mui/material"
 import createCardFromMetadata from "src/utils/createCardFromMetadata"
-import { set } from "@project-serum/anchor/dist/cjs/utils/features"
 import sounds from "../../utils/sounds"
 import { button } from "@material-tailwind/react"
 import Image from "next/image"
+import { useContext } from "react"
+import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
 export default function DecksRoute(props: any) {
   // Sounds handler variables
@@ -33,10 +31,8 @@ export default function DecksRoute(props: any) {
   }
   // Blockchain based variables
 
-  const { connection } = useConnection()
-  const wallet = useAnchorWallet()
+  const wallet = useContext(EvmWalletContext)
   const owner: string = wallet?.address?.toString()
-  const legendaryLootService = new LegendaryLootService(connection)
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   // Deck array variables
@@ -308,32 +304,6 @@ export default function DecksRoute(props: any) {
       }
     }
   }
-
-  // Fetch heroes when the component mounts & the wallet is connected
-  useEffect(() => {
-    // Function to pull NFT data from the blockchain
-    // and add it to the Player Cards array
-    const fetchHeroes = async () => {
-      let heroes = await legendaryLootService.getAllLoadouts(
-        wallet.address,
-        null
-      )
-
-      const playerCards = []
-      for (let i = 0; i < heroes.length; i++) {
-        let heroId = heroes[i].getNftId()
-        const card = await createCardFromMetadata(heroId)
-        playerCards.push(card)
-      }
-
-      setPlayerCards(playerCards)
-      setRemainingPlayerCards(playerCards)
-    }
-
-    if (wallet?.address) {
-      fetchHeroes()
-    }
-  }, [wallet])
 
   // Function to check star rarity and limit cards based on owned NFTs
 

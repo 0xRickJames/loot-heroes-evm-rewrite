@@ -76,37 +76,7 @@ export default function GameNew(props: Props) {
   const { address, connect, disconnect, signer, provider } =
     useContext(EvmWalletContext)
 
-  const [unclaimedGwen, setUnclaimeGwen] = useState(0)
-  const [lastClaimTimestamp, setLastClaimTimestamp] = useState(0)
-  const [isClaimGwenModalOpen, setIsClaimGwenModalOpen] = useState(false)
-  const [isClaimButtonDisabled, setIsClaimButtonDisabled] = useState(false)
-  const [isClaiming, setIsClaiming] = useState(false)
-  const [isGwenClaimFinishedOpen, setIsGwenClaimFinishedOpen] = useState(false)
-  const [isGwenClaimFailedOpen, setIsGwenClaimFailedOpen] = useState(false)
   const [error, setError] = useState(null)
-  // Fetch stats for unclaimed GWEN rewards and the timestamp for the last claim
-  const fetchPlayerData = useCallback(async () => {
-    if (address) {
-      try {
-        const response = await fetch(
-          `/api/profiles?address=${address.toString()}`
-        )
-        const data = await response.json()
-        console.log(data.unclaimedGwen, data.lastClaimTimestamp)
-        setUnclaimeGwen(data.unclaimedGwen)
-        setLastClaimTimestamp(data.lastClaimTimestamp)
-      } catch (error) {
-        console.error("Error fetching player data:", error)
-      }
-    }
-  }, [address])
-  React.useEffect(() => {
-    fetchPlayerData()
-  }, [fetchPlayerData])
-  async function handleGwenClaim(address: string, timestamp: number) {
-    setIsClaiming(true)
-    setError(null)
-  }
 
   // sounds variables
   const [soundsEnabled, setSoundsEnabled] = React.useState(false)
@@ -247,38 +217,6 @@ export default function GameNew(props: Props) {
                       Merchant
                     </p>
                   </Link>
-                  <hr />
-
-                  <button
-                    className={`font-carta text-2xl ${
-                      isOlderThanFiveMinutes(lastClaimTimestamp) &&
-                      !isClaimButtonDisabled &&
-                      unclaimedGwen > 0
-                        ? "hover:text-green-400"
-                        : "hover:text-red-400"
-                    }`}
-                    disabled={
-                      !isOlderThanFiveMinutes(lastClaimTimestamp) ||
-                      isClaimButtonDisabled ||
-                      unclaimedGwen === 0
-                    }
-                    onClick={() => {
-                      sounds.buttonClick()
-                      setIsClaimGwenModalOpen(true)
-
-                      console.log(unclaimedGwen, lastClaimTimestamp)
-                    }}
-                    onMouseOver={() => {
-                      sounds.highlightButton()
-                    }}
-                  >
-                    {`Claim GWEN ${
-                      isOlderThanFiveMinutes(lastClaimTimestamp) &&
-                      unclaimedGwen > 0
-                        ? `(${unclaimedGwen})`
-                        : ""
-                    }`}
-                  </button>
                 </div>
               </nav>
 
@@ -401,91 +339,6 @@ export default function GameNew(props: Props) {
         opponentName={opponentName}
         opponentPfp={opponentPfp}
       />
-      <Modal isOpen={isClaimGwenModalOpen} style={customStyles}>
-        <div className="flex flex-col items-center gap-2">
-          <h2 className="text-4xl font-bold m-3 text-yellow-300 shadow-black">
-            Claim GWEN
-          </h2>
-          <div className="border rounded flex flex-col items-center">
-            <label className="font-carta text-white shadow-black m-1 text-xl font-bold">
-              Receive:
-            </label>
-            <div className="flex">
-              <p className="font-carta text-white shadow-black text-xl m-2">
-                {unclaimedGwen} GWEN
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <button
-              onMouseOver={() => {
-                sounds.highlightButton()
-              }}
-              className="text-2xl font-carta text-white shadow-black m-2 border border-gray-800 rounded-md px-3 p-1 bg-yellow-400"
-              onClick={() => {
-                sounds.buttonClick()
-                setIsClaimGwenModalOpen(false)
-                setIsClaimButtonDisabled(true)
-                handleGwenClaim(address.toString(), Date.now())
-              }}
-            >
-              Claim
-            </button>
-            <button
-              onMouseOver={() => {
-                sounds.highlightButton()
-              }}
-              className="text-2xl font-carta text-white shadow-black m-2 border border-gray-800 rounded-md px-3 p-1 bg-gray-500"
-              onClick={() => {
-                sounds.backButton()
-                setIsClaimGwenModalOpen(false)
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Modal>
-      <Modal isOpen={isGwenClaimFinishedOpen} style={customStyles}>
-        <div className="flex flex-col items-center gap-2">
-          <h2 className="text-4xl font-bold m-3 text-yellow-300 shadow-black">
-            GWEN Sent!
-          </h2>
-          <div className="border rounded flex flex-col items-center">
-            <div className="flex">
-              <p className="font-carta text-white shadow-black text-xl m-2">
-                You should receive {unclaimedGwen} GWEN in your wallet within 5
-                minutes.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <button
-              onMouseOver={() => {
-                sounds.highlightButton()
-              }}
-              className="text-2xl font-carta text-white shadow-black m-2 border border-gray-800 rounded-md px-3 p-1 bg-gray-500"
-              onClick={() => {
-                sounds.buttonClick()
-                setIsGwenClaimFinishedOpen(false)
-              }}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      </Modal>
-      <Modal isOpen={isClaiming} style={customStyles}>
-        <div className="flex flex-col items-center">
-          <h2 className="text-2xl font-bold text-white shadow-black m-3">
-            Claiming GWEN Rewards...
-          </h2>
-          <p>Attempting to claim {unclaimedGwen} GWEN</p>
-          <InfinitySpin color="black" />
-        </div>
-      </Modal>
 
       <style jsx>{`
         :global(.wallet-adapter-dropdown button) {

@@ -10,8 +10,6 @@ import { useRouter } from "next/router"
 import createCardFromMetadata from "src/utils/createCardFromMetadata"
 import { getEmptyImage } from "react-dnd-html5-backend"
 import { AttackAnimationData } from "./Match"
-import { set } from "@project-serum/anchor/dist/cjs/utils/features"
-import card from "@material-tailwind/react/theme/components/card"
 import sounds from "../../../utils/sounds"
 
 export async function delay(ms: number) {

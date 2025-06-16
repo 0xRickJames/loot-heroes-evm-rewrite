@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import Modal from "react-modal"
 import { Router } from "next/router"
 import Image from "next/image"
-import { set } from "@project-serum/anchor/dist/cjs/utils/features"
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#__next")

@@ -2,10 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import io, { Socket } from "socket.io-client"
 import customParser from "socket.io-msgpack-parser"
 import { Card } from "src/utils/interfaces"
-import { useAnchorWallet } from "@solana/wallet-adapter-react"
 import axios from "axios"
-import { Metaplex, keypairIdentity } from "@metaplex-foundation/js"
-import { Connection, Keypair, address } from "@solana/web3.js"
 
 // Sounds
 
@@ -81,8 +78,6 @@ export default function useDungeonGame() {
   const socket = useRef<Socket>()
   const [currentMatch, setCurrentMatch] = useState<Match>(null)
 
-  const wallet = useAnchorWallet()
-  const address: string = wallet?.address?.toString()
   const [playerData, setPlayerData] = useState({
     playerName: "",
     playerPfp: "",
@@ -130,37 +125,6 @@ export default function useDungeonGame() {
   }) => {
     setDeckName(event.target.value)
   }
-
-  const fetchDeckNames = async () => {
-    await axios.get(`/api/decks?owner=${address}`).then((response) => {
-      const allDecks = response.data.map((deck: { name: any }) => deck.name)
-      setDeckNames([...allDecks, "Default Deck"])
-    })
-  }
-
-  const fetchPlayerData = useCallback(async () => {
-    if (address) {
-      try {
-        const response = await fetch(
-          `/api/profiles?address=${address.toString()}`
-        )
-        const data = await response.json()
-        setPlayerData(data)
-      } catch (error) {
-        console.error("Error fetching player data:", error)
-      }
-    }
-  }, [address])
-
-  useEffect(() => {
-    if (address) {
-      fetchDeckNames()
-    }
-  }, [address])
-
-  useEffect(() => {
-    fetchPlayerData()
-  }, [fetchPlayerData])
 
   // Listen to state changes and re-attach the listener
   // So that we can have the `currentMatch` variable updated in the callback

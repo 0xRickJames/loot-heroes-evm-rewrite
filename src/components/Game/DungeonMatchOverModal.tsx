@@ -190,8 +190,10 @@ const DungeonMatchOverModal: React.FC<DungeonMatchOverModalProps> = ({
           variants={rewardVariants}
           transition={{ delay: 2.5, duration: 1 }}
         >
-          {`You have been rewarded ${gwenRewards} $GWEN, but missed out on ${renownRewards} Renown!`}
+          {`You have been rewarded ${gwenRewards} $GWEN!!`}
+          {/*, but missed out on ${renownRewards} Renown!`}*/}
         </motion.div>
+        {/*
         <motion.div
           className={`${
             winnerName !== playerName || matchDraw || hasDungeonTicket
@@ -202,7 +204,7 @@ const DungeonMatchOverModal: React.FC<DungeonMatchOverModalProps> = ({
           transition={{ delay: 2.5, duration: 1 }}
         >
           {`Purchase a Hero NFT to receive Renown rewards next time!`}
-        </motion.div>
+        </motion.div>*/}
         <motion.div
           className="flex flex-col text-center w-56 h-56 lg:h-72 lg:w-72 bg-frame-c2-01 bg-cover bg-no-repeat bg-center self-center text-white text-lg lg:text-2xl font-carta-marina justify-center"
           variants={optionsVariants}

@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { connectToMongodbPlayers } from "../../utils/connectToMongodb"
-import { MongoClient, ObjectId, WithId } from "mongodb"
-import { address } from "@project-serum/anchor/dist/cjs/utils"
 
 export default async function handler(
   req: NextApiRequest,

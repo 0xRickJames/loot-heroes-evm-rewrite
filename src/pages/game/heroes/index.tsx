@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react"
 import { GameLayout } from "src/components/Game/GameLayout"
-import Heroes from "src/components/Game/Heroes"
 
 type Props = {}
 
@@ -11,5 +10,5 @@ HeroesPage.getLayout = function getLayout(page: ReactElement) {
 }
 
 export default function HeroesPage(props: Props) {
-  return <Heroes />
+  return
 }
