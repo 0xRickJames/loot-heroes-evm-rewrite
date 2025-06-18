@@ -1,7 +1,6 @@
 import { defaultDeck } from "./defaultDeck"
 import { Card } from "./interfaces"
 import metadataJson from "../assets/metadatas.json"
-import { Connection, clusterApiUrl } from "@solana/web3.js"
 import base from "src/environments/base"
 
 async function delay(ms: number) {
