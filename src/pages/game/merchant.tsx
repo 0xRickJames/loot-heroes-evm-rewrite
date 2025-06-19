@@ -8,8 +8,6 @@ import { useRouter } from "next/router"
 import { useContext } from "react"
 import { EvmWalletContext } from "src/contexts/EvmWalletContext"
 
-import { fromTxError } from "../../utils/errors"
-
 import sounds from "../../utils/sounds"
 
 function truncateString(input: string): string {
