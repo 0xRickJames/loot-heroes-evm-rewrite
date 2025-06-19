@@ -174,7 +174,8 @@ export default function usePvpGame() {
 
   // connect to the socket on mount
   useEffect(() => {
-    socket.current = io("http://localhost:3000/", {
+    socket.current = io("http://45.32.199.132:3000", {
+      //socket.current = io("http://localhost:3000/", {
       //socket.current = io("https://lootheroes-quadra-server.xyz:3000/", {
       parser: customParser,
       extraHeaders: {
