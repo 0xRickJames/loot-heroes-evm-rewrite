@@ -239,7 +239,7 @@ export default function DungeonPage() {
   }, [socket.current, currentMatch])
   // connect to the socket on mount
   useEffect(() => {
-    socket.current = io("https://quarda-server.rickmcfarley.lol:3000", {
+    socket.current = io("https://quadra-server.rickmcfarley.lol:3000", {
       //socket.current = io("http://localhost:3000/", {
       //socket.current = io("https://lootheroes-quadra-server.xyz:3000/", {
       parser: customParser,
